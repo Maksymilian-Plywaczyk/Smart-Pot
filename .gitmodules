@@ -1,0 +1,3 @@
+[submodule "Smart-Pot-ESP9266"]
+	path = Smart-Pot-ESP9266
+	url = https://github.com/Jakub-Glab/Smart-Pot-ESP9266.git
