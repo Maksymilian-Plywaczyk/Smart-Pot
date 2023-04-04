@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15.1-alpine3.17
+    container_name: postgres
+    restart: always
+    env_file:
+      - Smart-Pot-API/.env
+    environment:
+      PGDATA: /data/
+    volumes:
+      - ./api/database:/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d smart_pot_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: ./Smart-Pot-API
+    container_name: api
+    restart: always
+    env_file:
+      - Smart-Pot-API/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./Smart-Pot-API/app:/api/
+
+  react-app:
+    build: ./Smart-Pot-WebApp
+    container_name: react-app-container
+    restart: always
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
