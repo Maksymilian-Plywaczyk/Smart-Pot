@@ -167,7 +167,7 @@ cython_debug/
 
 # Generated files
 .idea/**/contentModel.xml
-
+database
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
