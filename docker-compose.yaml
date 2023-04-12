@@ -9,7 +9,7 @@ services:
     environment:
       PGDATA: /data/
     volumes:
-      - ./api/database:/data
+      - ./Smart-Pot-API/database:/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d smart_pot_database"]
       interval: 5s
@@ -27,13 +27,13 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./Smart-Pot-API/app:/api/
-
-  react-app:
-    build: ./Smart-Pot-WebApp
-    container_name: react-app-container
-    restart: always
-    ports:
-      - "3000:3000"
-    stdin_open: true
-    tty: true
+      - ./Smart-Pot-API/app:/api
+#
+#  react-app:
+#    build: ./Smart-Pot-WebApp
+#    container_name: react-app-container
+#    restart: always
+#    ports:
+#      - "3000:3000"
+#    stdin_open: true
+#    tty: true
