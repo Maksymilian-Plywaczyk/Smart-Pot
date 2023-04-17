@@ -11,4 +11,4 @@ class Plant(Base):
     humidity = Column(Float, nullable=True)  # nullable set to True it means that we can have nulls
     lux = Column(Float, nullable=True)
     temperature = Column(Float, nullable=True)
-    user = relationship("User", back_populates="plants")
+    owner_id = relationship("User", back_populates="plants")
