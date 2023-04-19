@@ -20,9 +20,9 @@ class PlantUpdate(PlantBase):
 class PlantDB(PlantBase):
     """ Plant model as model from database"""
     id: int
-    humidity: float = Field(ge=0.0, le=0.0, decimal_places=2, description="Value of plant humidity")
-    lux: float = Field(ge=1.0, le=65535.0, decimal_places=2, description="Value of plant lux")
-    temperature: float = Field(ge=-40.0, le=85.0, decimal_places=2, description="Value of plant temperature")
+    humidity: float = Field(ge=0.0, le=0.0, description="Value of plant humidity")
+    lux: float = Field(ge=1.0, le=65535.0, description="Value of plant lux")
+    temperature: float = Field(ge=-40.0, le=85.0, description="Value of plant temperature")
     owner_id: int
 
     class Config:

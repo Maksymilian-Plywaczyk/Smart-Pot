@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr, Field
-
+from app.schemas.plant import Plant
 """ Pydantic models to validate data about Users"""
 
 
@@ -30,7 +30,7 @@ class UserDB(UserBase):
     """ User model as model from database"""
     id: int
     hashed_password: str
-    plants: List = Field(default=[], description="User's plants")
+    plants: List[Plant] = Field(default=[], description="User's plants")
 
     class Config:
         orm_mode = True
