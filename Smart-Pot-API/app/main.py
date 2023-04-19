@@ -1,9 +1,17 @@
 # root of the project, which inits the FastAPI app
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from core.settings import settings
+from app.core.settings import settings
+import app.models.user as user_model
+import app.models.plant as plant_model
+from app.db.session import engine
+from app.api.endpoints.login import router as login_router
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+
+user_model.Base.metadata.create_all(bind=engine)
+plant_model.Base.metadata.create_all(bind=engine)
+
 
 origins = [
     "http://localhost",
@@ -18,7 +26,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-def read_root():
-    return {"Hello": "elo"}
+app.include_router(login_router)
