@@ -1,8 +1,12 @@
 from app.db.base import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Boolean, Column, Integer, String
+from typing import TYPE_CHECKING
 
 """ Database user model"""
+
+if TYPE_CHECKING:
+    from .plant import Plant  # noqa: F401
 
 
 class User(Base):

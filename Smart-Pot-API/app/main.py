@@ -1,8 +1,9 @@
 # root of the project, which inits the FastAPI app
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from core.settings import settings
 
-app = FastAPI()
+app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
 origins = [
     "http://localhost",
@@ -20,4 +21,4 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "elo"}
