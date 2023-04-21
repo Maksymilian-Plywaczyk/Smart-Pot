@@ -8,4 +8,3 @@ class Token(BaseModel):
 
 class TokenPayload(BaseModel):
     email: str = None
-    exp: int = None
