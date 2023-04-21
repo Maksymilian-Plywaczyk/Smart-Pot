@@ -3,12 +3,14 @@ from passlib.context import CryptContext
 from typing import Union, Optional
 from datetime import datetime, timedelta
 from jose import jwt
+from fastapi.security import OAuth2PasswordBearer
 
 SECRET_KEY = settings.SECRET_KEY  # secret key for JWT
 ALGORITHM = "HS256"  # type of algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES  # expire time for access token
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
 
 
 def get_hashed_password(plain_password: str) -> str:
