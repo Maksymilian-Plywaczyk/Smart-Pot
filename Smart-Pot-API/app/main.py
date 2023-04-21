@@ -6,12 +6,12 @@ import app.models.user as user_model
 import app.models.plant as plant_model
 from app.db.session import engine
 from app.api.endpoints.login import router as login_router
+from app.api.endpoints.users import router as users_router
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
 user_model.Base.metadata.create_all(bind=engine)
 plant_model.Base.metadata.create_all(bind=engine)
-
 
 origins = [
     "http://localhost",
@@ -27,3 +27,5 @@ app.add_middleware(
 )
 
 app.include_router(login_router)
+app.include_router(users_router)
+
