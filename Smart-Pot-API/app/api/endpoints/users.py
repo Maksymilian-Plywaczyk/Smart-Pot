@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
-from app.api.endpoints.tags import Tag
-from app.schemas.user import User
 from typing import Annotated
+
+from fastapi import APIRouter, Depends
+
+from app.api.endpoints.tags import Tag
 from app.crud.crud_users import get_current_active_user
+from app.schemas.user import User
 
 router = APIRouter(prefix="/api/v1/users", tags=[Tag.LOGIN])
 

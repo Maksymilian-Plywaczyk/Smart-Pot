@@ -1,13 +1,17 @@
-from app.core.settings import settings
-from passlib.context import CryptContext
-from typing import Union, Optional
 from datetime import datetime, timedelta
-from jose import jwt
+from typing import Optional, Union
+
 from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from passlib.context import CryptContext
+
+from app.core.settings import settings
 
 SECRET_KEY = settings.SECRET_KEY  # secret key for JWT
 ALGORITHM = "HS256"  # type of algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES  # expire time for access token
+ACCESS_TOKEN_EXPIRE_MINUTES = (
+    settings.ACCESS_TOKEN_EXPIRE_MINUTES
+)  # expire time for access token
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
@@ -21,7 +25,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(subject: Union[str, any], expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(
+    subject: Union[str, any], expires_delta: Optional[timedelta] = None
+) -> str:
     if expires_delta is not None:
         expires_delta = datetime.utcnow() + expires_delta
     else:

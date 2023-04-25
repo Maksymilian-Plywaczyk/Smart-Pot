@@ -1,22 +1,20 @@
 # root of the project, which inits the FastAPI app
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.settings import settings
-import app.models.user as user_model
+
 import app.models.plant as plant_model
-from app.db.session import engine
+import app.models.user as user_model
 from app.api.endpoints.login import router as login_router
 from app.api.endpoints.users import router as users_router
+from app.core.settings import settings
+from app.db.session import engine
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 
 user_model.Base.metadata.create_all(bind=engine)
 plant_model.Base.metadata.create_all(bind=engine)
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080"
-]
+origins = ["http://localhost", "http://localhost:8080"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,4 +26,3 @@ app.add_middleware(
 
 app.include_router(login_router)
 app.include_router(users_router)
-

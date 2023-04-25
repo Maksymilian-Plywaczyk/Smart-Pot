@@ -1,15 +1,17 @@
-from app.db.base import Base
-from sqlalchemy import Column, Float, Integer, String,ForeignKey
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
+from app.db.base import Base
 
 """Database plant model"""
 
 
 class Plant(Base):
-
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
-    humidity = Column(Float, nullable=True)  # nullable set to True it means that we can have nulls
+    humidity = Column(
+        Float, nullable=True
+    )  # nullable set to True it means that we can have nulls
     lux = Column(Float, nullable=True)
     temperature = Column(Float, nullable=True)
     user_id = Column(Integer, ForeignKey("user.id"))
