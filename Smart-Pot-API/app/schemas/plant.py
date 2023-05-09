@@ -23,7 +23,13 @@ class PlantCreate(PlantBase):
 class PlantUpdate(PlantBase):
     """Plant class for receive on plant update"""
 
-    pass
+    humidity: float = Field(default=None, ge=0.0, description="Value of plant humidity")
+    lux: float = Field(
+        default=None, ge=1.0, le=65535.0, description="Value of plant lux"
+    )
+    temperature: float = Field(
+        default=None, ge=-40.0, le=85.0, description="Value of plant temperature"
+    )
 
 
 class PlantDB(PlantBase):

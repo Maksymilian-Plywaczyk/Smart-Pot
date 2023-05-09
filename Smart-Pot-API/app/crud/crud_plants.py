@@ -7,7 +7,7 @@ from app.crud.crud_users import get_current_user
 from app.models.plant import Plant as PlantDB
 from app.models.user import User
 
-from ..schemas.plant import Plant, PlantCreate
+from ..schemas.plant import Plant, PlantCreate, PlantUpdate
 
 
 def get_plant_by_id(db: Session, plant_id: int):
@@ -31,3 +31,18 @@ def create_new_plant(new_plant: PlantCreate, db: Session, user_id: int):
     db.commit()
     db.refresh(database_plant)
     return database_plant
+
+
+def update_plant(plant_id: int, db: Session, updated_plant: PlantUpdate) -> Plant:
+    db_plant = get_plant_by_id(db, plant_id)
+    if not db_plant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
+        )
+    plant_data = updated_plant.dict(exclude_unset=True)
+    for key, value in plant_data.items():
+        setattr(db_plant, key, value)
+    db.add(db_plant)
+    db.commit()
+    db.refresh(db_plant)
+    return db_plant

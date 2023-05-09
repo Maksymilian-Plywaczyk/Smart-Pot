@@ -9,10 +9,11 @@ from app.crud.crud_plants import (
     create_new_plant,
     get_current_user_plants,
     get_plant_by_id,
+    update_plant,
 )
 from app.crud.crud_users import get_current_user
 from app.models.user import User
-from app.schemas.plant import Plant, PlantCreate
+from app.schemas.plant import Plant, PlantCreate, PlantUpdate
 
 router = APIRouter(prefix="/api/v1/plants", tags=[Tag.PLANTS])
 
@@ -44,3 +45,11 @@ def create_new_plant_for_current_user(
         )
     new_plant = create_new_plant(new_plant, db, current_user.id)
     return new_plant
+
+
+@router.patch("/{plant_id}", status_code=status.HTTP_200_OK, response_model=Plant)
+def update_existing_plant(
+    plant_id: int, updated_plant: PlantUpdate, db: Session = Depends(get_db)
+):
+    updated_plant = update_plant(plant_id, db, updated_plant)
+    return updated_plant
