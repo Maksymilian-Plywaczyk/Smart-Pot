@@ -35,3 +35,6 @@ Container is configurated to work as development environment so every change in 
 To get secret key, which you need to pass in `.env` file you need to type in terminal that command and then copy this to `.env` file:
 <br/>
 `openssl rand -hex 32`
+
+## Interactive API document
+![docs](https://github.com/Maksymilian-Plywaczyk/todo-app-with-fast-api/assets/65869609/a3533ce4-a956-43a0-ba21-f2379553168d)
