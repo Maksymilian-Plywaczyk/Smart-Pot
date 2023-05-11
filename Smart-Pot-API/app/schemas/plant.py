@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+from app.schemas.sensors import Sensor
+
 
 class PlantBase(BaseModel):
     """Base class for Plant Pydantic model"""
@@ -13,23 +15,15 @@ class PlantCreate(PlantBase):
     """Plant class for creating new one"""
 
     name: str
-    humidity: float = Field(ge=0.0, description="Value of plant humidity")
-    lux: float = Field(ge=1.0, le=65535.0, description="Value of plant lux")
-    temperature: float = Field(
-        ge=-40.0, le=85.0, description="Value of plant temperature"
-    )
+    sensors: Sensor
+    # last_updated: Optional[str] = None
 
 
 class PlantUpdate(PlantBase):
     """Plant class for receive on plant update"""
 
-    humidity: float = Field(default=None, ge=0.0, description="Value of plant humidity")
-    lux: float = Field(
-        default=None, ge=1.0, le=65535.0, description="Value of plant lux"
-    )
-    temperature: float = Field(
-        default=None, ge=-40.0, le=85.0, description="Value of plant temperature"
-    )
+    sensors: Sensor
+    # last_updated: Optional[str] = None
 
 
 class PlantDB(PlantBase):
