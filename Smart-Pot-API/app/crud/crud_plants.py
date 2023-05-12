@@ -31,6 +31,7 @@ def create_new_plant(new_plant: PlantCreate, db: Session, user_id: int):
         humidity=new_plant.sensors.humidity,
         lux=new_plant.sensors.lux,
         temperature=new_plant.sensors.temperature,
+        last_updated=new_plant.last_updated,
         user_id=user_id,
     )
     db.add(database_plant)
@@ -46,8 +47,10 @@ def update_plant(plant_id: int, db: Session, updated_plant: PlantUpdate) -> Plan
             status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
         )
     plant_data = updated_plant.dict(exclude_unset=True)
-
     for key, value in plant_data.items():
+        if key == 'sensors':
+            for sensor_key, sensor_value in value.items():
+                setattr(db_plant, sensor_key, sensor_value)
         setattr(db_plant, key, value)
     db.add(db_plant)
     db.commit()
