@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from datetime import datetime
+
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
-
-"""Database plant model"""
 
 
 class Plant(Base):
@@ -14,6 +14,6 @@ class Plant(Base):
     )  # nullable set to True it means that we can have nulls
     lux = Column(Float, nullable=True)
     temperature = Column(Float, nullable=True)
-    # last_updated = Column(DateTime, default=datetime.utcnow())
+    last_updated = Column(DateTime, default=datetime.utcnow())
     user_id = Column(Integer, ForeignKey("user.id"))
     owner_id = relationship("User", back_populates="plants")

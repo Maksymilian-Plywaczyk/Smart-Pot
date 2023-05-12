@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -9,6 +10,7 @@ class PlantBase(BaseModel):
     """Base class for Plant Pydantic model"""
 
     name: Optional[str] = None
+    last_updated: Optional[datetime] = datetime.now()
 
 
 class PlantCreate(PlantBase):
@@ -16,14 +18,12 @@ class PlantCreate(PlantBase):
 
     name: str
     sensors: Sensor
-    # last_updated: Optional[str] = None
 
 
 class PlantUpdate(PlantBase):
     """Plant class for receive on plant update"""
 
     sensors: Sensor
-    # last_updated: Optional[str] = None
 
 
 class PlantDB(PlantBase):
