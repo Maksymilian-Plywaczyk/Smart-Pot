@@ -1,9 +1,9 @@
-from typing import Annotated, List
+from typing import Annotated, Any, List
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.crud.crud_users import get_current_user
+from app.crud.crud_users import get_current_user, get_user_by_email
 from app.models.plant import Plant as PlantDB
 from app.models.user import User
 
@@ -56,3 +56,19 @@ def update_plant(plant_id: int, db: Session, updated_plant: PlantUpdate) -> Plan
     db.commit()
     db.refresh(db_plant)
     return db_plant
+
+
+def delete_user_plant(plant_id: int, db: Session, user_email: str) -> Any:
+    db_user = get_user_by_email(db, user_email)
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    db_plant = get_plant_by_id(db, plant_id)
+    if not db_plant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
+        )
+    db.delete(db_plant)
+    db.commit()
+    return {"message": "Plant deleted successfully"}

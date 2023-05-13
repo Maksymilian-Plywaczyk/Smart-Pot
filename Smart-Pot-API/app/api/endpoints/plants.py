@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -7,12 +7,14 @@ from app.api.endpoints.tags import Tag
 from app.core.dependencies import get_db
 from app.crud.crud_plants import (
     create_new_plant,
+    delete_user_plant,
     get_current_user_plants,
     get_plant_by_id,
     update_plant,
 )
-from app.crud.crud_users import get_current_user
+from app.crud.crud_users import get_current_active_user, get_current_user
 from app.models.user import User
+from app.schemas.message import Message
 from app.schemas.plant import Plant, PlantCreate, PlantUpdate
 
 router = APIRouter(prefix="/api/v1/plants", tags=[Tag.PLANTS])
@@ -53,3 +55,14 @@ def update_existing_plant(
 ):
     updated_plant = update_plant(plant_id, db, updated_plant)
     return updated_plant
+
+
+@router.delete("/{plant_id}", status_code=status.HTTP_200_OK, response_model=Message)
+def delete_plant(
+    plant_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+) -> Any:
+    user_email = current_user.email
+    deleted_message = delete_user_plant(plant_id, db, user_email)
+    return deleted_message
