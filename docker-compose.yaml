@@ -31,7 +31,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./Smart-Pot-API/app:/app
+      - ./Smart-Pot-API/app:/smart_pot_api/app
 
 #
 #  react-app:
