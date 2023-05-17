@@ -15,7 +15,12 @@ app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 user_model.Base.metadata.create_all(bind=engine)
 plant_model.Base.metadata.create_all(bind=engine)
 
-origins = ["http://localhost", "http://localhost:8080"]
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost:8000",
+]
 
 app.add_middleware(
     CORSMiddleware,
