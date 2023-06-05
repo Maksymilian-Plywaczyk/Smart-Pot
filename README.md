@@ -17,7 +17,7 @@ A smart pot api is a part of smart pot project which get data from ESP8266 about
 	 `source venv/bin/activate` or on Windows `venv/Scripts/activate`
  4. Install list of dependencies from `requirements.txt`\
 	`pip install -r requirements.txt`
- 5. Create `.env` file as the `.env.example` file and swap `SECRET KEY` with yours [Getting secret key](#getting-secret-key).
+ 5. Create `.env` file using command: `cp .env.template .env`  and swap `SECRET KEY` with yours [Getting secret key](#getting-secret-key).
 7. Run the project using [Docker configuration](#docker-configuration) and you should see the docs in url [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 8. Feel free to use this API :)
 
