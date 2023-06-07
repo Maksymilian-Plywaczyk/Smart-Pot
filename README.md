@@ -34,4 +34,5 @@ To get secret key, which you need to pass in `.env` file you need to type in ter
 `openssl rand -hex 32`
 
 ## Interactive API document
-![docs](https://github.com/Maksymilian-Plywaczyk/todo-app-with-fast-api/assets/65869609/a3533ce4-a956-43a0-ba21-f2379553168d)
+![docs_api](https://github.com/Maksymilian-Plywaczyk/Smart-Pot/assets/65869609/c43d90d6-817c-4580-bf3d-3380c5fb7274)
+
