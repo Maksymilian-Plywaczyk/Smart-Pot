@@ -13,3 +13,4 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     plants = relationship("Plant", back_populates="owner_id")
+    devices = relationship("Device", back_populates="user")

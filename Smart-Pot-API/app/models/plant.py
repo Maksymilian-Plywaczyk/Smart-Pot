@@ -16,4 +16,6 @@ class Plant(Base):
     temperature = Column(Float, nullable=True)
     last_updated = Column(DateTime, default=datetime.utcnow())
     user_id = Column(Integer, ForeignKey("user.id"))
+    device_id = Column(String, ForeignKey("device.id"))
     owner_id = relationship("User", back_populates="plants")
+    device = relationship("Device", back_populates="plant", uselist=False)
