@@ -9,6 +9,7 @@ from app.crud.crud_plants import (
     create_new_plant,
     delete_user_plant,
     get_current_user_plants,
+    get_plant_by_device,
     get_plant_by_id,
     update_plant,
 )
@@ -45,15 +46,18 @@ def create_new_plant_for_current_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
+    if get_plant_by_device(db=db, plant_device=new_plant.device_id):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Device is connecting with other plant. Choose different device",
+        )
     new_plant = create_new_plant(new_plant, db, current_user.id)
     return new_plant
 
 
-@router.patch("/{plant_id}", status_code=status.HTTP_200_OK, response_model=Plant)
-def update_existing_plant(
-    plant_id: int, updated_plant: PlantUpdate, db: Session = Depends(get_db)
-):
-    updated_plant = update_plant(plant_id, db, updated_plant)
+@router.patch("/update-plant", status_code=status.HTTP_200_OK, response_model=Plant)
+def update_existing_plant(updated_plant: PlantUpdate, db: Session = Depends(get_db)):
+    updated_plant = update_plant(db, updated_plant)
     return updated_plant
 
 
