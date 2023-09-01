@@ -27,8 +27,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_context.verify(plain_password, hashed_password)
 
 
-def verify_nodemcu_token(nodemcu_token: str) -> bool:
-    if nodemcu_token == settings.NODEMCU_KEY:
+def verify_device_token(device_token_db: str, request_device_token: str) -> bool:
+    if device_token_db == request_device_token:
         return True
     return False
 
