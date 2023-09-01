@@ -19,13 +19,18 @@ class PlantCreate(PlantBase):
     """Plant class for creating new one"""
 
     name: str
-    sensors: Optional[Sensor] = None
+    sensors: Optional[Sensor] = Field(
+        default=Sensor(humidity=0.0, lux=0.0, temperature=0.0),
+        description="Plant's sensors",
+    )
 
 
 class PlantUpdate(PlantBase):
     """Plant class for receive on plant update"""
 
     sensors: Sensor
+    device_token: str
+    device_id: str
 
 
 class PlantDB(PlantBase):

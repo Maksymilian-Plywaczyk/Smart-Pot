@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+from app.schemas.mail import EmailResponse
 from app.schemas.utils.device_enums import DeviceNames
 
 
@@ -13,6 +14,7 @@ class DeviceResponse(BaseModel):
     name: str
     type: str
     user_id: int
+    emailResponse: EmailResponse
 
 
 class DeviceCreate(DeviceBase):
