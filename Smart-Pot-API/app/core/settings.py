@@ -19,7 +19,9 @@ class Settings:
     DATABASE_URL: str = (
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres/{POSTGRES_DB}"
     )
-
+    EMAIL_ADDRESS: str = os.getenv("EMAIL_ADDRESS")
+    EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
+    EMAIL_USERNAME: str = os.getenv("EMAIL_USERNAME")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
 
