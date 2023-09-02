@@ -14,14 +14,15 @@ class UserBase(BaseModel):
 
     full_name: str
     email: Optional[EmailStr] = None
-    is_active: Optional[bool] = True
+    is_active: Optional[bool] = False
 
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
     """
     User which we're putting as parameter creating new one.
     """
 
+    full_name: str
     email: EmailStr = Field(..., description="Email must be provided")
     password: str = Field(
         ..., description="Password must be provided"
