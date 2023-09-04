@@ -7,9 +7,15 @@ from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
 from app.core.dependencies import get_db
-from app.core.security import create_access_token
+from app.core.security import create_access_token, destroy_access_token, oauth2_scheme
 from app.core.settings import settings
-from app.crud.crud_users import create_new_user, get_user_by_email, user_authentication
+from app.crud.crud_users import (
+    create_new_user,
+    get_current_user,
+    get_user_by_email,
+    user_authentication,
+)
+from app.models.user import User
 from app.schemas.message import Message
 from app.schemas.token import Token
 from app.schemas.user import UserCreate
@@ -32,13 +38,26 @@ def login_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-
+    user.is_active = True
+    db.commit()
     return {
         "access_token": create_access_token(
             subject=user.email, expires_delta=access_token_expires
         ),
         "token_type": "bearer",
     }
+
+
+@router.post("/logout", response_model=Message)
+def logout(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> Any:
+    current_user.is_active = False
+    db.commit()
+    destroy_access_token(db=db, token=token, current_user=current_user)
+    return {"message": "User logged out successfully"}
 
 
 @router.post("/registration", response_model=Message)

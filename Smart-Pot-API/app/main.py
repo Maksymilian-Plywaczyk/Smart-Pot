@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import app.models.blacklist_token as token_model
 import app.models.device as device_model
 import app.models.plant as plant_model
 import app.models.user as user_model
@@ -17,6 +18,7 @@ app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 user_model.Base.metadata.create_all(bind=engine)
 plant_model.Base.metadata.create_all(bind=engine)
 device_model.Base.metadata.create_all(bind=engine)
+token_model.Base.metadata.create_all(bind=engine)
 origins = [
     "http://localhost",
     "http://localhost:8080",
