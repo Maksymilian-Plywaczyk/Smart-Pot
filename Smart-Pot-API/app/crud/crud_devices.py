@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy import String, cast
 from sqlalchemy.orm import Session
 
-from app.crud.crud_users import get_current_user, get_user_by_email
+from app.crud.crud_users import get_current_active_user, get_user_by_email
 from app.models.device import Device
 from app.models.user import User
 from app.schemas.device import DeviceCreate
@@ -20,7 +20,7 @@ def get_device_by_id(db: Session, device_id: str):
 
 
 def get_current_user_devices(
-    current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_active_user)]
 ) -> List[Device]:
     if not current_user:
         raise HTTPException(

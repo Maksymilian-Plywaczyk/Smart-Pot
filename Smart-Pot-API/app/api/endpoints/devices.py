@@ -13,7 +13,7 @@ from app.crud.crud_devices import (
     get_current_user_devices,
     get_device_by_id,
 )
-from app.crud.crud_users import get_current_active_user, get_current_user
+from app.crud.crud_users import get_current_active_user
 from app.crud.email_connection import MailConnection
 from app.models.user import User
 from app.schemas.device import Device, DeviceCreate, DeviceResponse
@@ -47,7 +47,7 @@ def read_device_by_id(device_id: str, db=Depends(get_db)) -> Device:
 )
 async def create_new_device_for_current_user(
     new_device: DeviceCreate,
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
     db=Depends(get_db),
 ):
     if not current_user:

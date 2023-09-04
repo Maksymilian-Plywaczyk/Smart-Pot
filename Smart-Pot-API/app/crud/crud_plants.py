@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import verify_device_token
 from app.crud.crud_devices import get_device_by_id
-from app.crud.crud_users import get_current_user, get_user_by_email
+from app.crud.crud_users import get_current_active_user, get_user_by_email
 from app.models.plant import Plant as PlantDB
 from app.models.user import User
 
@@ -27,7 +27,7 @@ def get_plant_by_device_id(db: Session, plant_device_id: str):
 
 
 def get_current_user_plants(
-    current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_active_user)]
 ) -> List[Plant]:
     if not current_user:
         raise HTTPException(

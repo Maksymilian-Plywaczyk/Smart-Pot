@@ -13,7 +13,7 @@ from app.crud.crud_plants import (
     get_plant_by_id,
     update_plant,
 )
-from app.crud.crud_users import get_current_active_user, get_current_user
+from app.crud.crud_users import get_current_active_user
 from app.models.user import User
 from app.schemas.message import Message
 from app.schemas.plant import Plant, PlantCreate, PlantUpdate
@@ -39,7 +39,7 @@ def read_plant_by_id(plant_id: int, db: Session = Depends(get_db)) -> Plant:
 @router.post("/new-plant", status_code=status.HTTP_201_CREATED, response_model=Plant)
 def create_new_plant_for_current_user(
     new_plant: PlantCreate,
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db),
 ):
     if not current_user:

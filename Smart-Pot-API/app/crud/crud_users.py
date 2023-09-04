@@ -1,7 +1,7 @@
 from typing import Annotated, Optional
 
 from fastapi import Depends, HTTPException
-from jose import JWTError
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db
@@ -11,6 +11,7 @@ from app.core.security import (
     verify_access_token,
     verify_password,
 )
+from app.crud.crud_token import get_token_by_token
 from app.models.user import User
 from app.schemas.token import TokenPayload
 from app.schemas.user import UserCreate
@@ -38,13 +39,26 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    token_expire_exception = HTTPException(
+        status_code=401,
+        detail="Token has expired",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
         email = verify_access_token(token)
+        if get_token_by_token(db=db, token=token):
+            raise HTTPException(
+                status_code=401,
+                detail="Token is invalid or has been invalidated (logged out).",
+            )
         if email is None:
             raise credentials_exception
         token_data = TokenPayload(email=email)
+    except jwt.ExpiredSignatureError:
+        raise token_expire_exception
     except JWTError:
         raise credentials_exception
+
     user = get_user_by_email(db=db, user_email=token_data.email)
     if user is None:
         raise credentials_exception
