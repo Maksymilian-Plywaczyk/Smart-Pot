@@ -61,7 +61,7 @@ async def create_new_device_for_current_user(
     email_address = EmailStr(current_user.email)
     email = Email(email=email_address, body={"device_token": device_token})
     mail_connection = MailConnection(email)
-    response = await mail_connection.send_email(new_device.id)
+    response = await mail_connection.send_email(new_device.id, device_token)
     email_response = parse_obj_as(EmailResponse, json.loads(response.body))
     return DeviceResponse(
         id=new_device.id,

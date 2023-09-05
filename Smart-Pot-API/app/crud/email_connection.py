@@ -24,8 +24,8 @@ class MailConnection:
             VALIDATE_CERTS=True,
         )
 
-    async def send_email(self, device_id: str) -> JSONResponse:
-        html = """<p>Hi this test mail, thanks for using Fastapi-mail</p> """
+    async def send_email(self, device_id: str, device_token: str) -> JSONResponse:
+        html = f"""<p>Hi! This is your token: {device_token}</p> """
         message = MessageSchema(
             subject=f"Authentication token for Device: {device_id}",
             recipients=[self.email.dict().get("email")],
