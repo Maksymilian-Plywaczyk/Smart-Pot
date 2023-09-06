@@ -1,18 +1,25 @@
 from datetime import timedelta
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
 from app.core.dependencies import get_db
-from app.core.security import create_access_token, destroy_access_token, oauth2_scheme
+from app.core.security import (
+    create_access_token,
+    destroy_access_token,
+    get_hashed_password,
+    oauth2_scheme,
+    verify_access_token,
+)
 from app.core.settings import settings
 from app.crud.crud_users import (
     create_new_user,
     get_current_user,
     get_user_by_email,
+    is_active,
     user_authentication,
 )
 from app.models.user import User
@@ -70,3 +77,33 @@ def registration(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
         )
     create_new_user(db=db, user=user_in)
     return {"message": "User created successfully"}
+
+
+@router.post("/reset-password", response_model=Message)
+def reset_password(
+    token: str = Body(...),
+    new_password: str = Body(...),
+    db: Session = Depends(get_db),
+) -> Any:
+    user_email = verify_access_token(token)
+    if user_email is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is invalid or has been invalidated (logged out).",
+        )
+    user = get_user_by_email(db=db, user_email=user_email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email not found",
+        )
+    elif not is_active(user):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User is inactive",
+        )
+    hashed_password = get_hashed_password(new_password)
+    user.hashed_password = hashed_password
+    db.commit()
+    db.refresh(user)
+    return {"message": "Password updated successfully"}

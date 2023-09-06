@@ -28,8 +28,11 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=False,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://develop--nimble-bunny-6e0ba7.netlify.app",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
