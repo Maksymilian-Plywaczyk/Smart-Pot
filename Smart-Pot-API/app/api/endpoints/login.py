@@ -2,7 +2,6 @@ from datetime import timedelta
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
@@ -30,9 +29,15 @@ from app.schemas.user import UserCreate
 router = APIRouter(prefix="/api/v1", tags=[Tag.LOGIN])
 
 
+class OAuth2PasswordRequestJson:
+    def __init__(self, email: str = Body(), password: str = Body()):
+        self.username = email
+        self.password = password
+
+
 @router.post("/token", response_model=Token)
 def login_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    form_data: Annotated[OAuth2PasswordRequestJson, Depends()],
     db: Session = Depends(get_db),
 ) -> Any:
     user = user_authentication(
