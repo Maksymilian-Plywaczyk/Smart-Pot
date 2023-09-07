@@ -2,12 +2,14 @@ from datetime import timedelta
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
+from jose import jwt
 from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
 from app.core.dependencies import get_db
 from app.core.security import (
     create_access_token,
+    create_refresh_token,
     destroy_access_token,
     get_hashed_password,
     oauth2_scheme,
@@ -23,7 +25,7 @@ from app.crud.crud_users import (
 )
 from app.models.user import User
 from app.schemas.message import Message
-from app.schemas.token import Token
+from app.schemas.token import RefreshToken, Token
 from app.schemas.user import UserCreate
 
 router = APIRouter(prefix="/api/v1", tags=[Tag.LOGIN])
@@ -50,12 +52,15 @@ def login_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        subject=user.email, expires_delta=access_token_expires
+    )
+    refresh_token = create_refresh_token(subject=user.email)
     user.is_active = True
     db.commit()
     return {
-        "access_token": create_access_token(
-            subject=user.email, expires_delta=access_token_expires
-        ),
+        "access_token": access_token,
+        "refresh_token": refresh_token,
         "token_type": "bearer",
     }
 
@@ -82,6 +87,34 @@ def registration(user_in: UserCreate, db: Session = Depends(get_db)) -> Any:
         )
     create_new_user(db=db, user=user_in)
     return {"message": "User created successfully"}
+
+
+@router.post("/refresh", response_model=Token)
+def get_refresh_token(
+    refresh_token: RefreshToken, db: Session = Depends(get_db)
+) -> Any:
+    try:
+        user_email = verify_access_token(refresh_token.token)
+        if user_email is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token is invalid or has been invalidated (logged out).",
+            )
+        if not get_user_by_email(db=db, user_email=user_email):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User with this email not found",
+            )
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Refresh token has expired")
+
+    new_access_token = create_access_token(subject=user_email)
+    new_refresh_token = create_refresh_token(subject=user_email)
+    return {
+        "access_token": new_access_token,
+        "refresh_token": new_refresh_token,
+        "token_type": "bearer",
+    }
 
 
 @router.post("/reset-password", response_model=Message)

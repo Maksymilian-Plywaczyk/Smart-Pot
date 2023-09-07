@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -23,6 +24,12 @@ class Settings:
     EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
     EMAIL_USERNAME: str = os.getenv("EMAIL_USERNAME")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_TIME: int = 60 * 24 * 7  # 7 days
 
 
-settings = Settings()  # create an instance of the class
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()
+
+
+settings = get_settings()  # create an instance of the class

@@ -60,6 +60,15 @@ def create_access_token(
     return encoded_jwt
 
 
+def create_refresh_token(subject: Union[str, any]) -> str:
+    expires_delta = datetime.utcnow() + timedelta(
+        minutes=settings.REFRESH_TOKEN_EXPIRE_TIME
+    )
+    to_encode = {"exp": expires_delta, "subject": str(subject)}
+    encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
 def destroy_access_token(db: Session, token: str, current_user: User) -> Message:
     current_user_email = verify_access_token(token)
     try:
