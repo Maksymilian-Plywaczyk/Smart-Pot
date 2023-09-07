@@ -19,6 +19,15 @@ def get_plant_by_id(db: Session, plant_id: int):
     return plant_by_id
 
 
+def get_user_plant_by_id(db: Session, plant_id: int, user_id: int):
+    plant_by_id = (
+        db.query(PlantDB)
+        .filter(PlantDB.id == plant_id, PlantDB.user_id == user_id)
+        .first()
+    )
+    return plant_by_id
+
+
 def get_plant_by_device_id(db: Session, plant_device_id: str):
     plant_by_device = (
         db.query(PlantDB).filter(PlantDB.device_id == plant_device_id).first()

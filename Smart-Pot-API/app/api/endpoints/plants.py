@@ -10,7 +10,7 @@ from app.crud.crud_plants import (
     delete_user_plant,
     get_current_user_plants,
     get_plant_by_device_id,
-    get_plant_by_id,
+    get_user_plant_by_id,
     update_plant,
 )
 from app.crud.crud_users import get_current_active_user
@@ -27,8 +27,17 @@ def get_current_user_plants(plants: Annotated[List, Depends(get_current_user_pla
 
 
 @router.get("/{plant_id}", status_code=status.HTTP_200_OK, response_model=Plant)
-def read_plant_by_id(plant_id: int, db: Session = Depends(get_db)) -> Plant:
-    plant = get_plant_by_id(plant_id=plant_id, db=db)
+def read_plant_by_id(
+    plant_id: int,
+    user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+) -> Plant:
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found or user is not active",
+        )
+    plant = get_user_plant_by_id(db, plant_id, user.id)
     if plant is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Cannot find plant"

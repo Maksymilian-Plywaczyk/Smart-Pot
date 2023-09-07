@@ -30,7 +30,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://develop--nimble-bunny-6e0ba7.netlify.app",
+        "https://develop--smartpot.netlify.app",
+        "https://smartpot.netlify.app",
+        "http://localhost:5000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
