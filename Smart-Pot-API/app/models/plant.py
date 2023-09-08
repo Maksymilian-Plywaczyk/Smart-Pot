@@ -9,6 +9,7 @@ from app.db.base import Base
 class Plant(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
+    imgsrc = Column(String, nullable=True)
     humidity = Column(
         Float, nullable=True
     )  # nullable set to True it means that we can have nulls

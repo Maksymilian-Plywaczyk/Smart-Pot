@@ -19,6 +19,7 @@ class PlantCreate(PlantBase):
     """Plant class for creating new one"""
 
     name: str
+    imgsrc: Optional[str] = None
     sensors: Optional[Sensor] = Field(
         default=Sensor(humidity=0.0, lux=0.0, temperature=0.0),
         description="Plant's sensors",
@@ -42,6 +43,7 @@ class PlantDB(PlantBase):
     temperature: float = Field(
         ge=-40.0, le=85.0, description="Value of plant temperature"
     )
+    imgsrc: str
     user_id: int
     device_id: str
     device: Device = Field(default=..., description="Plant's device")

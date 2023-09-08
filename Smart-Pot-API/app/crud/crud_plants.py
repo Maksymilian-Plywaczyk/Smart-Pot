@@ -54,6 +54,7 @@ def create_new_plant(new_plant: PlantCreate, db: Session, user_id: int):
     database_plant = PlantDB(
         name=new_plant.name,
         humidity=new_plant.sensors.humidity,
+        imgsrc=new_plant.imgsrc,
         lux=new_plant.sensors.lux,
         temperature=new_plant.sensors.temperature,
         last_updated=new_plant.last_updated,
