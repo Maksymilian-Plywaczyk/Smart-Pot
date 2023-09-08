@@ -1,5 +1,6 @@
 from typing import Annotated, List
 
+import shortuuid
 from fastapi import Depends, HTTPException, status
 from sqlalchemy import String, cast
 from sqlalchemy.orm import Session
@@ -10,8 +11,9 @@ from app.models.user import User
 from app.schemas.device import DeviceCreate
 
 
-def create_id_for_device(device_type: str, user_id: int):
-    return f"{device_type}-{user_id}"
+def create_id_for_device(device_type: str):
+    device_uuid = shortuuid.uuid()
+    return f"{device_type}-{device_uuid}"
 
 
 def get_device_by_id(db: Session, device_id: str):
@@ -32,7 +34,12 @@ def get_current_user_devices(
 def create_new_device(
     new_device: DeviceCreate, db: Session, current_user_id: int, device_token: str
 ):
-    id_as_str = create_id_for_device(new_device.type, current_user_id)
+    id_as_str = create_id_for_device(new_device.type)
+    if get_device_by_id(db, id_as_str):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Device already exist"
+        )
+
     database_device = Device(
         id=id_as_str,
         name=new_device.name,
