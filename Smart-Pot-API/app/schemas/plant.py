@@ -30,8 +30,8 @@ class PlantUpdate(PlantBase):
     """Plant class for receive on plant update"""
 
     sensors: Sensor
+    device_id: Optional[str] = None
     device_token: str
-    device_id: str
 
 
 class PlantDB(PlantBase):

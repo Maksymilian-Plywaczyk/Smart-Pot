@@ -21,6 +21,13 @@ def get_device_by_id(db: Session, device_id: str):
     return device_by_id
 
 
+def get_device_by_token(db: Session, device_token: str):
+    device_by_token = (
+        db.query(Device).filter(Device.device_token == device_token).first()
+    )
+    return device_by_token
+
+
 def get_current_user_devices(
     current_user: Annotated[User, Depends(get_current_active_user)]
 ) -> List[Device]:

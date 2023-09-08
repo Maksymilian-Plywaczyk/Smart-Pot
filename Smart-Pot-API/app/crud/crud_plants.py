@@ -4,8 +4,9 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.security import verify_device_token
-from app.crud.crud_devices import get_device_by_id
+from app.crud.crud_devices import get_device_by_id, get_device_by_token
 from app.crud.crud_users import get_current_active_user, get_user_by_email
+from app.models.device import Device
 from app.models.plant import Plant as PlantDB
 from app.models.user import User
 
@@ -26,6 +27,16 @@ def get_user_plant_by_id(db: Session, plant_id: int, user_id: int):
         .first()
     )
     return plant_by_id
+
+
+def get_plant_by_device_token(db: Session, device_token: str):
+    plant_by_device = (
+        db.query(PlantDB)
+        .join(Device, PlantDB.device_id == Device.id)
+        .filter(Device.device_token == device_token)
+        .first()
+    )
+    return plant_by_device
 
 
 def get_plant_by_device_id(db: Session, plant_device_id: str):
@@ -67,14 +78,14 @@ def create_new_plant(new_plant: PlantCreate, db: Session, user_id: int):
     return database_plant
 
 
-def update_plant(db: Session, updated_plant: PlantUpdate) -> Plant:
-    db_device = get_device_by_id(db, updated_plant.device_id)
+def update_plant(db: Session, updated_plant: PlantUpdate) -> Any:
+    db_device = get_device_by_token(db, updated_plant.device_token)
     if not db_device:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User cannot update plant with not exisiting device",
         )
-    db_plant = get_plant_by_device_id(db, plant_device_id=updated_plant.device_id)
+    db_plant = get_plant_by_device_token(db, device_token=updated_plant.device_token)
     if not db_plant:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
