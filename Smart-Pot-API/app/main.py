@@ -9,6 +9,7 @@ import app.models.user as user_model
 from app.api.endpoints.devices import router as devices_router
 from app.api.endpoints.login import router as login_router
 from app.api.endpoints.plants import router as plants_router
+from app.api.endpoints.plants import router_historical as plants_router_historical
 from app.api.endpoints.users import router as users_router
 from app.core.settings import settings
 from app.db.session import engine
@@ -43,3 +44,4 @@ app.include_router(login_router)
 app.include_router(users_router)
 app.include_router(plants_router)
 app.include_router(devices_router)
+app.include_router(plants_router_historical)

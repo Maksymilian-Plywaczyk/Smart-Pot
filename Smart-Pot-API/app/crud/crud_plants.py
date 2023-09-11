@@ -1,5 +1,5 @@
-from datetime import datetime
-from typing import Annotated, Any, List
+from datetime import datetime, timezone
+from typing import Annotated, Any, List, Optional
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -13,6 +13,17 @@ from app.models.plant import Plant_Hist
 from app.models.user import User
 
 from ..schemas.plant import Plant, PlantCreate, PlantUpdate
+
+
+def convert_string_date_to_datetime(date: str, _format: str = "%Y-%m-%d") -> datetime:
+    try:
+        date_as_datetime = datetime.strptime(date, _format)
+        return date_as_datetime
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Wrong date format, accepted format is YYYY-MM-DD",
+        )
 
 
 # TODO move sqlalchemy filter statement to 2.0 version
@@ -142,3 +153,36 @@ def delete_user_plant(plant_id: int, db: Session, user_email: str) -> Any:
     db.delete(db_plant)
     db.commit()
     return {"message": "Plant deleted successfully"}
+
+
+def get_user_historical_plant_data_limit(db: Session, plant_id: int, limit: int):
+    plant_hist = (
+        db.query(Plant_Hist)
+        .filter(Plant_Hist.plant_id == plant_id)
+        .order_by(Plant_Hist.added_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return plant_hist
+
+
+def get_user_historical_plant_data_by_date(
+    db: Session, plant_id: int, start_at: str, end_at: Optional[str]
+):
+    if end_at is None:
+        end_at_as_datetime = datetime.now(timezone.utc)
+    else:
+        end_at_as_datetime = convert_string_date_to_datetime(end_at)
+    start_at_as_datetime = convert_string_date_to_datetime(start_at)
+    plant_hist = (
+        db.query(Plant_Hist)
+        .filter(
+            Plant_Hist.plant_id == plant_id,
+            Plant_Hist.added_at >= start_at_as_datetime,
+            Plant_Hist.added_at <= end_at_as_datetime,
+        )
+        .order_by(Plant_Hist.added_at.desc())
+        .all()
+    )
+    return plant_hist

@@ -56,3 +56,17 @@ class Plant(PlantDB):
     """Plant class for returning via API"""
 
     pass
+
+
+class PlantHist(BaseModel):
+    id: int
+    temperature: float = Field(
+        ge=-40.0, le=85.0, description="Value of plant temperature"
+    )
+    lux: float = Field(ge=0.0, le=65535.0, description="Value of plant lux")
+    humidity: float = Field(ge=0.0, description="Value of plant humidity")
+    added_at: datetime
+    plant_id: int
+
+    class Config:
+        orm_mode = True
