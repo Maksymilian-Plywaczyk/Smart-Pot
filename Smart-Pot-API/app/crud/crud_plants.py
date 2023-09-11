@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated, Any, List
 
 from fastapi import Depends, HTTPException, status
@@ -8,6 +9,7 @@ from app.crud.crud_devices import get_device_by_id, get_device_by_token
 from app.crud.crud_users import get_current_active_user, get_user_by_email
 from app.models.device import Device
 from app.models.plant import Plant as PlantDB
+from app.models.plant import Plant_Hist
 from app.models.user import User
 
 from ..schemas.plant import Plant, PlantCreate, PlantUpdate
@@ -78,6 +80,21 @@ def create_new_plant(new_plant: PlantCreate, db: Session, user_id: int):
     return database_plant
 
 
+def save_plant_history_data(db: Session, plant_db: PlantDB) -> Any:
+    utc_now = datetime.utcnow()
+    plant_hist = Plant_Hist(
+        temperature=plant_db.temperature,
+        lux=plant_db.lux,
+        humidity=plant_db.humidity,
+        added_at=utc_now,
+        plant_id=plant_db.id,
+    )
+    db.add(plant_hist)
+    db.commit()
+    db.refresh(plant_hist)
+    return plant_hist
+
+
 def update_plant(db: Session, updated_plant: PlantUpdate) -> Any:
     db_device = get_device_by_token(db, updated_plant.device_token)
     if not db_device:
@@ -98,6 +115,7 @@ def update_plant(db: Session, updated_plant: PlantUpdate) -> Any:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Cannot verify device token",
         )
+    save_plant_history_data(db, db_plant)
     plant_data = updated_plant.dict(exclude_unset=True)
     for key, value in plant_data.items():
         if key == 'sensors':

@@ -20,3 +20,14 @@ class Plant(Base):
     device_id = Column(String, ForeignKey("device.id"))
     owner_id = relationship("User", back_populates="plants")
     device = relationship("Device", back_populates="plant", uselist=False)
+    plant_hist = relationship("Plant_Hist", back_populates="plant", uselist=False)
+
+
+class Plant_Hist(Base):
+    id = Column(Integer, primary_key=True, index=True)
+    temperature = Column(Float, nullable=False)
+    lux = Column(Float, nullable=False)
+    humidity = Column(Float, nullable=False)
+    added_at = Column(DateTime, default=datetime.utcnow())
+    plant_id = Column(Integer, ForeignKey('plant.id'))
+    plant = relationship("Plant", back_populates="plant_hist", uselist=False)
