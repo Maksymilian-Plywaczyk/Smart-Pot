@@ -35,6 +35,11 @@ class UserUpdate(UserBase):
     )  # ... in field means that this field is required.
 
 
+class UserDelete(BaseModel):
+    user_token: str
+    password: str
+
+
 class UserDB(UserBase):
     """User model as model from database"""
 

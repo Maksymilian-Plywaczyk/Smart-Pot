@@ -139,6 +139,10 @@ def update_plant(db: Session, updated_plant: PlantUpdate) -> Any:
     return db_plant
 
 
+def update_plant_name(db: Session, new_name: str, plant_id: int) -> Any:
+    pass
+
+
 def delete_user_plant(plant_id: int, db: Session, user_email: str) -> Any:
     db_user = get_user_by_email(db, user_email)
     if not db_user:

@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Any, Optional
 
 from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
@@ -86,3 +86,9 @@ def create_new_user(db: Session, user: UserCreate):
     db.commit()
     db.refresh(database_user)
     return database_user
+
+
+def delete_user(db: Session, user: User) -> Any:
+    db.delete(user)
+    db.commit()
+    return {"message": "User deleted succesfully"}
