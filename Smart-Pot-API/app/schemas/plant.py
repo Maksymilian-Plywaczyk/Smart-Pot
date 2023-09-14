@@ -34,6 +34,10 @@ class PlantUpdate(PlantBase):
     device_token: str
 
 
+class ChangePlantName(BaseModel):
+    name: str
+
+
 class PlantDB(PlantBase):
     """Plant model as model from database"""
 

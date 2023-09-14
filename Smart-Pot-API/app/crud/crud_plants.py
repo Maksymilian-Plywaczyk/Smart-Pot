@@ -12,7 +12,7 @@ from app.models.plant import Plant as PlantDB
 from app.models.plant import Plant_Hist
 from app.models.user import User
 
-from ..schemas.plant import Plant, PlantCreate, PlantUpdate
+from ..schemas.plant import ChangePlantName, Plant, PlantCreate, PlantUpdate
 
 
 def convert_string_date_to_datetime(date: str, _format: str = "%Y-%m-%d") -> datetime:
@@ -139,8 +139,22 @@ def update_plant(db: Session, updated_plant: PlantUpdate) -> Any:
     return db_plant
 
 
-def update_plant_name(db: Session, new_name: str, plant_id: int) -> Any:
-    pass
+def update_plant_name(
+    db: Session, changed_name_plant: ChangePlantName, plant_id: int
+) -> Any:
+    db_plant = get_plant_by_id(db=db, plant_id=plant_id)
+    if not db_plant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Cannot find plant with that id",
+        )
+    plant_data = changed_name_plant.dict(exclude_unset=True)
+    for key, value in plant_data.items():
+        setattr(db_plant, key, value)
+    db.add(db_plant)
+    db.commit()
+    db.refresh()
+    return db_plant
 
 
 def delete_user_plant(plant_id: int, db: Session, user_email: str) -> Any:

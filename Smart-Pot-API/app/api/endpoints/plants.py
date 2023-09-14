@@ -14,11 +14,18 @@ from app.crud.crud_plants import (
     get_user_historical_plant_data_limit,
     get_user_plant_by_id,
     update_plant,
+    update_plant_name,
 )
 from app.crud.crud_users import get_current_active_user
 from app.models.user import User
 from app.schemas.message import Message
-from app.schemas.plant import Plant, PlantCreate, PlantHist, PlantUpdate
+from app.schemas.plant import (
+    ChangePlantName,
+    Plant,
+    PlantCreate,
+    PlantHist,
+    PlantUpdate,
+)
 
 router = APIRouter(prefix="/api/v1/plants", tags=[Tag.PLANTS])
 router_historical = APIRouter(prefix="/api/v1/hist-plants", tags=[Tag.PLANTS])
@@ -70,6 +77,20 @@ def create_new_plant_for_current_user(
 @router.patch("/update-plant", status_code=status.HTTP_200_OK, response_model=Plant)
 def update_existing_plant(updated_plant: PlantUpdate, db: Session = Depends(get_db)):
     updated_plant = update_plant(db, updated_plant)
+    return updated_plant
+
+
+@router.patch(
+    "/update-plant-name/{plant_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=Plant,
+)
+def change_plant_name(
+    changed_name_plant: ChangePlantName, plant_id: int, db=Depends(get_db)
+):
+    updated_plant = update_plant_name(
+        db=db, changed_name_plant=changed_name_plant, plant_id=plant_id
+    )
     return updated_plant
 
 
