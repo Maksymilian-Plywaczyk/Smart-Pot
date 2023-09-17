@@ -20,11 +20,13 @@ class Settings:
     DATABASE_URL: str = (
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres/{POSTGRES_DB}"
     )
+    EMAIL_TEMPLATE_DIR: str = "app/templates/"
     EMAIL_ADDRESS: str = os.getenv("EMAIL_ADDRESS")
     EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
     EMAIL_USERNAME: str = os.getenv("EMAIL_USERNAME")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_TIME: int = 60 * 24 * 7  # 7 days
+    RESET_PASSWORD_TOKEN_EXPIRE_TIME: int = 60 * 24  # 1 day
 
 
 @lru_cache()
