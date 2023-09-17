@@ -11,5 +11,10 @@ class RefreshToken(BaseModel):
     token: str
 
 
+class ResetToken(BaseModel):
+    reset_password_token: str
+    token_type: str = Field(default="bearer", description="Type of token")
+
+
 class TokenPayload(BaseModel):
     email: str = None
