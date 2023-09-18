@@ -20,7 +20,9 @@ services:
       timeout: 5s
       retries: 10
   api:
-    build: ./Smart-Pot-API
+    build:
+      context: ./Smart-Pot-API
+      dockerfile: Dockerfile
     container_name: api
     restart: always
     env_file:
