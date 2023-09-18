@@ -1,8 +1,10 @@
 from datetime import timedelta
-from typing import Annotated, Any
+from typing import Annotated, Any, Union
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
@@ -10,6 +12,7 @@ from app.core.dependencies import get_db
 from app.core.security import (
     create_access_token,
     create_refresh_token,
+    create_reset_password_token,
     destroy_access_token,
     get_hashed_password,
     oauth2_scheme,
@@ -23,9 +26,11 @@ from app.crud.crud_users import (
     is_active,
     user_authentication,
 )
+from app.crud.email_connection import MailConnection
 from app.models.user import User
+from app.schemas.mail import Email
 from app.schemas.message import Message
-from app.schemas.token import RefreshToken, Token
+from app.schemas.token import RefreshToken, ResetToken, Token
 from app.schemas.user import UserCreate
 
 router = APIRouter(prefix="/api/v1", tags=[Tag.LOGIN])
@@ -39,7 +44,7 @@ class OAuth2PasswordRequestJson:
 
 @router.post("/token", response_model=Token)
 def login_access_token(
-    form_data: Annotated[OAuth2PasswordRequestJson, Depends()],
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),
 ) -> Any:
     user = user_authentication(
@@ -145,3 +150,27 @@ def reset_password(
     db.commit()
     db.refresh(user)
     return {"message": "Password updated successfully"}
+
+
+@router.post("/recover-password", response_model=Union[None, ResetToken])
+async def recover_password(
+    user_email: EmailStr = Body(...), db: Session = Depends(get_db)
+) -> Any:
+    user = get_user_by_email(db, user_email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email not found",
+        )
+    email_address = EmailStr(user_email)
+    action_url = settings.FRONTEND_URL + "/reset-password"
+    email = Email(
+        email=email_address, body={"name": user.full_name, "action_url": action_url}
+    )
+    mail_connection = MailConnection(email)
+    response = await mail_connection.send_email_resetting_password()
+    token = create_reset_password_token(subject=user_email)
+    if response.status_code == 200:
+        return {"reset_password_token": token, "token_type": "bearer"}
+    else:
+        return None
