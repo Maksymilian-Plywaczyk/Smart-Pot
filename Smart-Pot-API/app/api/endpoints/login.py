@@ -2,7 +2,6 @@ from datetime import timedelta
 from typing import Annotated, Any, Union
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
@@ -23,7 +22,6 @@ from app.crud.crud_users import (
     create_new_user,
     get_current_user,
     get_user_by_email,
-    is_active,
     user_authentication,
 )
 from app.crud.email_connection import MailConnection
@@ -44,7 +42,7 @@ class OAuth2PasswordRequestJson:
 
 @router.post("/token", response_model=Token)
 def login_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    form_data: Annotated[OAuth2PasswordRequestJson, Depends()],
     db: Session = Depends(get_db),
 ) -> Any:
     user = user_authentication(
@@ -139,11 +137,6 @@ def reset_password(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User with this email not found",
-        )
-    elif not is_active(user):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User is inactive",
         )
     hashed_password = get_hashed_password(new_password)
     user.hashed_password = hashed_password
