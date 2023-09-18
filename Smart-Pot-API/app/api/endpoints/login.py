@@ -154,7 +154,7 @@ def reset_password(
 
 @router.post("/recover-password", response_model=Union[None, ResetToken])
 async def recover_password(
-    user_email: EmailStr = Body(...), db: Session = Depends(get_db)
+    user_email: EmailStr = Body(..., embed=True), db: Session = Depends(get_db)
 ) -> Any:
     user = get_user_by_email(db, user_email)
     if not user:
