@@ -1,6 +1,7 @@
 # root of the project, which inits the FastAPI app
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
 import app.models.blacklist_token as token_model
 import app.models.device as device_model
@@ -15,6 +16,12 @@ from app.core.settings import settings
 from app.db.session import engine
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+
+
+@app.get("/healthcheck")
+def healthcheck():
+    return {"status": "ok"}
+
 
 user_model.Base.metadata.create_all(bind=engine)
 plant_model.Base.metadata.create_all(bind=engine)
@@ -45,3 +52,5 @@ app.include_router(users_router)
 app.include_router(plants_router)
 app.include_router(devices_router)
 app.include_router(plants_router_historical)
+
+handler = Mangum(app)
