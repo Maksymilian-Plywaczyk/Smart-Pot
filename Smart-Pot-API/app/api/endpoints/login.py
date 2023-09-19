@@ -29,7 +29,7 @@ from app.models.user import User
 from app.schemas.mail import Email
 from app.schemas.message import Message
 from app.schemas.token import RefreshToken, ResetToken, Token
-from app.schemas.user import UserCreate
+from app.schemas.user import UserChangePassword, UserCreate
 
 router = APIRouter(prefix="/api/v1", tags=[Tag.LOGIN])
 
@@ -122,11 +122,10 @@ def get_refresh_token(
 
 @router.post("/reset-password", response_model=Message)
 def reset_password(
-    token: str = Body(...),
-    new_password: str = Body(...),
+    user_change_password: UserChangePassword,
     db: Session = Depends(get_db),
 ) -> Any:
-    user_email = verify_access_token(token)
+    user_email = verify_access_token(user_change_password.token)
     if user_email is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -138,7 +137,7 @@ def reset_password(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User with this email not found",
         )
-    hashed_password = get_hashed_password(new_password)
+    hashed_password = get_hashed_password(user_change_password.new_password)
     user.hashed_password = hashed_password
     db.commit()
     db.refresh(user)

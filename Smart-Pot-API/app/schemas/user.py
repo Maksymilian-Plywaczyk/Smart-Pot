@@ -6,6 +6,8 @@ from app.schemas.plant import Plant
 
 """ Pydantic models to validate data about Users"""
 
+password_regex = "((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})"
+
 
 class UserBase(BaseModel):
     """
@@ -25,14 +27,21 @@ class UserCreate(BaseModel):
     full_name: str
     email: EmailStr = Field(..., description="Email must be provided")
     password: str = Field(
-        ..., description="Password must be provided"
+        ..., description="Password must be provided", regex=password_regex
     )  # ... in field means that this field is required.
 
 
 class UserUpdate(UserBase):
     password: str = Field(
-        ..., description="Password must be provided"
+        ..., description="Password must be provided", regex=password_regex
     )  # ... in field means that this field is required.
+
+
+class UserChangePassword(BaseModel):
+    token: str
+    new_password: str = Field(
+        ..., description="User new password", regex=password_regex
+    )
 
 
 class UserDelete(BaseModel):
