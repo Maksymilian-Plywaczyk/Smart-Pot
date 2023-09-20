@@ -34,13 +34,3 @@ services:
         condition: service_healthy
     volumes:
       - ./Smart-Pot-API/app:/smart_pot_api/app
-
-#
-#  react-app:
-#    build: ./Smart-Pot-WebApp
-#    container_name: react-app-container
-#    restart: always
-#    ports:
-#      - "3000:3000"
-#    stdin_open: true
-#    tty: true
