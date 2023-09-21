@@ -3,6 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr, Field
 
 from app.schemas.plant import Plant
+from app.schemas.utils.languages import Languages
 
 """ Pydantic models to validate data about Users"""
 
@@ -16,6 +17,7 @@ class UserBase(BaseModel):
 
     full_name: str
     email: Optional[EmailStr] = None
+    language: Optional[Languages] = None
     is_active: Optional[bool] = False
 
 
