@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
@@ -9,6 +9,7 @@ from app.core.security import verify_access_token
 from app.crud.crud_users import (
     delete_user,
     get_current_active_user,
+    update_user_language,
     user_authentication,
 )
 from app.schemas.message import Message
@@ -20,6 +21,20 @@ router = APIRouter(prefix="/api/v1/users", tags=[Tag.USERS])
 @router.get("/me", response_model=User)
 def get_current_user(current_user: Annotated[User, Depends(get_current_active_user)]):
     return current_user
+
+
+@router.patch("/update-language", response_model=Message, status_code=200)
+def update_active_user_language(
+    current_active_user: Annotated[User, Depends(get_current_active_user)],
+    language: str = Body(..., embed=True),
+    db: Session = Depends(get_db),
+):
+    if not current_active_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active"
+        )
+    user = update_user_language(db=db, user=current_active_user, language=language)
+    return {"message": f"User language has been updated to {user.language}"}
 
 
 @router.delete("/active-user-delete", response_model=Message, status_code=200)
