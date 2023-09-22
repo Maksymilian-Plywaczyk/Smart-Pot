@@ -1,5 +1,6 @@
 from typing import Annotated, Any, Optional
 
+import pytz
 from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
@@ -15,6 +16,14 @@ from app.crud.crud_token import get_token_by_token
 from app.models.user import User
 from app.schemas.token import TokenPayload
 from app.schemas.user import UserCreate
+
+
+def validate_user_timezone(timezone: str) -> bool:
+    try:
+        pytz.timezone(timezone)
+        return True
+    except pytz.exceptions.UnknownTimeZoneError:
+        return False
 
 
 def get_user_by_email(db: Session, user_email: str):
@@ -69,6 +78,13 @@ def is_active(user: User) -> bool:
     if not user.is_active:
         return False
     return True
+
+
+def update_user_timezone(db: Session, user: User, timezone: str) -> Any:
+    user.timezone = timezone
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def update_user_language(db: Session, user: User, language: str) -> Any:

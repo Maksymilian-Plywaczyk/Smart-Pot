@@ -10,10 +10,12 @@ from app.crud.crud_users import (
     delete_user,
     get_current_active_user,
     update_user_language,
+    update_user_timezone,
     user_authentication,
+    validate_user_timezone,
 )
 from app.schemas.message import Message
-from app.schemas.user import User, UserDelete
+from app.schemas.user import User, UserDelete, UserTimezoneSet
 
 router = APIRouter(prefix="/api/v1/users", tags=[Tag.USERS])
 
@@ -35,6 +37,28 @@ def update_active_user_language(
         )
     user = update_user_language(db=db, user=current_active_user, language=language)
     return {"message": f"User language has been updated to {user.language}"}
+
+
+@router.patch("/update-timezone", response_model=Message, status_code=200)
+def update_active_user_timezone(
+    current_active_user: Annotated[User, Depends(get_current_active_user)],
+    timezone: UserTimezoneSet,
+    db: Session = Depends(get_db),
+):
+    if not validate_user_timezone(timezone.timezone):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User provide wrong timezone",
+        )
+    if not current_active_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active"
+        )
+
+    user = update_user_timezone(
+        db=db, user=current_active_user, timezone=timezone.timezone
+    )
+    return {"message": f"User timezone has been updated to {user.timezone}"}
 
 
 @router.delete("/active-user-delete", response_model=Message, status_code=200)
