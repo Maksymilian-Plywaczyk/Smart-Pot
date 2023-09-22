@@ -18,7 +18,12 @@ class UserBase(BaseModel):
     full_name: str
     email: Optional[EmailStr] = None
     language: Optional[Languages] = None
+    timezone: Optional[str] = None
     is_active: Optional[bool] = False
+
+
+class UserTimezoneSet(BaseModel):
+    timezone: str
 
 
 class UserCreate(BaseModel):
