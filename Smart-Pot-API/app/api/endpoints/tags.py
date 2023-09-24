@@ -6,3 +6,4 @@ class Tag(str, Enum):
     LOGIN = "Login"
     PLANTS = "Plants"
     DEVICES = "Devices"
+    HEALTHCHECK = "Healthcheck"
