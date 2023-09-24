@@ -2,5 +2,5 @@ from enum import Enum
 
 
 class DeviceNames(str, Enum):
-    NODEMCU: str = "NODEMCU"
+    RASPBERRYPI: str = "RASPBERRYPI"
     ESP: str = "ESP"
