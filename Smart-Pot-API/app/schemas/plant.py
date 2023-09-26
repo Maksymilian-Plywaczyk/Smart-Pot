@@ -1,9 +1,10 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 from app.schemas.device import Device
+from app.schemas.sensor_threshold import SensorThreshold
 from app.schemas.sensors import Sensor
 
 
@@ -51,6 +52,9 @@ class PlantDB(PlantBase):
     user_id: int
     device_id: str
     device: Device = Field(default=..., description="Plant's device")
+    sensor_threshold: List[SensorThreshold] = Field(
+        default=[], description="Plant's sensor thresholds"
+    )
 
     class Config:
         orm_mode = True
