@@ -6,6 +6,7 @@ from mangum import Mangum
 import app.models.blacklist_token as token_model
 import app.models.device as device_model
 import app.models.plant as plant_model
+import app.models.sensor_threshold as sensor_threshold_model
 import app.models.user as user_model
 from app.api.endpoints.devices import router as devices_router
 from app.api.endpoints.login import router as login_router
@@ -29,6 +30,8 @@ user_model.Base.metadata.create_all(bind=engine)
 plant_model.Base.metadata.create_all(bind=engine)
 device_model.Base.metadata.create_all(bind=engine)
 token_model.Base.metadata.create_all(bind=engine)
+sensor_threshold_model.Base.metadata.create_all(bind=engine)
+
 origins = [
     "http://localhost",
     "http://localhost:8080",
