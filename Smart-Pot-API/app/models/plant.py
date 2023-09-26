@@ -21,6 +21,9 @@ class Plant(Base):
     owner_id = relationship("User", back_populates="plants")
     device = relationship("Device", back_populates="plant", uselist=False)
     plant_hist = relationship("Plant_Hist", back_populates="plant", uselist=False)
+    sensor_threshold = relationship(
+        "SensorThreshold", back_populates="plant", uselist=False
+    )
 
 
 class Plant_Hist(Base):
