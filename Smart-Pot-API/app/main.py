@@ -3,11 +3,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
-import app.models.blacklist_token as token_model
-import app.models.device as device_model
-import app.models.plant as plant_model
-import app.models.sensor_threshold as sensor_threshold_model
-import app.models.user as user_model
 from app.api.endpoints.devices import router as devices_router
 from app.api.endpoints.login import router as login_router
 from app.api.endpoints.plants import router as plants_router
@@ -15,7 +10,6 @@ from app.api.endpoints.plants import router_historical as plants_router_historic
 from app.api.endpoints.tags import Tag
 from app.api.endpoints.users import router as users_router
 from app.core.settings import settings
-from app.db.session import engine
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
 handler = Mangum(app)
@@ -25,12 +19,6 @@ handler = Mangum(app)
 def healthcheck():
     return {"status": "ok"}
 
-
-user_model.Base.metadata.create_all(bind=engine)
-plant_model.Base.metadata.create_all(bind=engine)
-device_model.Base.metadata.create_all(bind=engine)
-token_model.Base.metadata.create_all(bind=engine)
-sensor_threshold_model.Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost",

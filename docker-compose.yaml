@@ -34,3 +34,5 @@ services:
         condition: service_healthy
     volumes:
       - ./Smart-Pot-API/app:/smart_pot_api/app
+      - ./Smart-Pot-API/alembic.ini:/smart_pot_api/alembic.ini
+      - ./Smart-Pot-API/alembic:/smart_pot_api/alembic

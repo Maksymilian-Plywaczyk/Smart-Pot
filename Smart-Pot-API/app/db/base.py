@@ -1,9 +1,10 @@
 from typing import Any
 
+from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 
 
-@as_declarative()  # class decorator for declarative_base()
+@as_declarative(metadata=MetaData())  # class decorator for declarative_base()
 class Base:
     id: Any
     __name__: str
