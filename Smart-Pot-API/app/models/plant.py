@@ -22,7 +22,7 @@ class Plant(Base):
     device = relationship("Device", back_populates="plant", uselist=False)
     plant_hist = relationship("Plant_Hist", back_populates="plant", uselist=False)
     sensor_threshold = relationship(
-        "SensorThreshold", back_populates="plant", uselist=False
+        "SensorThreshold", back_populates="plant", uselist=True
     )
 
 
