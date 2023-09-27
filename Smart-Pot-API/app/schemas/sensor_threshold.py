@@ -3,13 +3,12 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, Field, validator
 
-from app.schemas.plant import Plant
 from app.schemas.utils.sensors_type import SensorType
 
 sensor_fields = {
-    "hum": Field(..., description="Value of plant humidity", ge=0.0),
-    "lux": Field(..., description="Value of plant lux", ge=0.0, le=65535.0),
-    "temp": Field(..., description="Value of plant temperature", ge=-40.0, le=85.0),
+    "hum": {"min_val": 0, "max_val": 100},
+    "lux": {"min_val": 0, "max_val": 65535},
+    "temp": {"min_val": -40, "max_val": 85},
 }
 
 
@@ -18,12 +17,22 @@ class SensorThresholdBase(BaseModel):
     min_value: Optional[int] = None
     max_value: Optional[int] = None
 
-    @validator('min_value', 'max_value', pre=True)
+    @validator('min_value', 'max_value', pre=True, always=True)
     def validate_min_max_values(cls, value, values):
         sensor_name = values.get('sensor_name')
-        if sensor_name not in sensor_fields.keys():
-            raise ValueError(f"Sensor name {sensor_name} not found")
-        return sensor_fields[sensor_name]
+        if sensor_name not in sensor_fields:
+            raise ValueError(f"Sensor name '{sensor_name}' not found in sensor_fields.")
+
+        if not (
+            sensor_fields[sensor_name]["min_val"]
+            <= value
+            <= sensor_fields[sensor_name]["max_val"]
+        ):
+            raise ValueError(
+                f"min_value should be between {sensor_fields[sensor_name].ge}"
+                f" and {sensor_fields[sensor_name].le} for sensor '{sensor_name}'"
+            )
+        return value
 
 
 class SensorThresholdCreate(SensorThresholdBase):
@@ -34,8 +43,7 @@ class SensorThresholdCreate(SensorThresholdBase):
     last_updated: datetime = Field(default=datetime.utcnow())
 
 
-class SensorThresholdUpdate(SensorThresholdBase):
-    sensor_name: Annotated[str, SensorType]
+class SensorThresholdUpdate(BaseModel):
     min_value: int
     max_value: int
     last_updated: datetime = Field(default=datetime.utcnow())
@@ -44,7 +52,6 @@ class SensorThresholdUpdate(SensorThresholdBase):
 class SensorThresholdDB(SensorThresholdBase):
     id: int
     plant_id: int
-    plant: Plant = Field(default=..., description="Plant's sensor thresholds")
 
     class Config:
         orm_mode = True
