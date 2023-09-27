@@ -7,3 +7,4 @@ class Tag(str, Enum):
     PLANTS = "Plants"
     DEVICES = "Devices"
     HEALTHCHECK = "Healthcheck"
+    THRESHOLDS = "Sensor thresholds"
