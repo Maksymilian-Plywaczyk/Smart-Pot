@@ -42,6 +42,12 @@ def get_user_plant_by_id(db: Session, plant_id: int, user_id: int):
     return plant_by_id
 
 
+def delete_plant_hist_by_plant_id(db: Session, plant_id: int):
+    plant_hist = db.query(Plant_Hist).filter(Plant_Hist.plant_id == plant_id).delete()
+    db.commit()
+    return plant_hist
+
+
 def get_plant_by_device_token(db: Session, device_token: str):
     plant_by_device = (
         db.query(PlantDB)
@@ -92,12 +98,11 @@ def create_new_plant(new_plant: PlantCreate, db: Session, user_id: int):
 
 
 def save_plant_history_data(db: Session, plant_db: PlantDB) -> Any:
-    utc_now = datetime.utcnow()
     plant_hist = Plant_Hist(
         temperature=plant_db.temperature,
         lux=plant_db.lux,
         humidity=plant_db.humidity,
-        added_at=utc_now,
+        added_at=plant_db.last_updated,
         plant_id=plant_db.id,
     )
     db.add(plant_hist)
@@ -168,6 +173,7 @@ def delete_user_plant(plant_id: int, db: Session, user_email: str) -> Any:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
         )
+    delete_plant_hist_by_plant_id(db, plant_id)
     db.delete(db_plant)
     db.commit()
     return {"message": "Plant deleted successfully"}
