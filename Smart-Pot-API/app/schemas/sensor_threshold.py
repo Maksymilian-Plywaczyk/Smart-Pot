@@ -1,7 +1,6 @@
-from datetime import datetime
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, validator
 
 from app.schemas.utils.sensors_type import SensorType
 
@@ -13,13 +12,19 @@ sensor_fields = {
 
 
 class SensorThresholdBase(BaseModel):
-    sensor_name: Optional[str] = None
+    threshold_id: Optional[str] = None
     min_value: Optional[int] = None
     max_value: Optional[int] = None
 
+
+class SensorThresholdUpdate(BaseModel):
+    threshold_id: Annotated[str, SensorType]
+    min_value: int
+    max_value: int
+
     @validator('min_value', 'max_value', pre=True, always=True)
     def validate_min_max_values(cls, value, values):
-        sensor_name = values.get('sensor_name')
+        sensor_name = values.get('threshold_id')
         if sensor_name not in sensor_fields:
             raise ValueError(f"Sensor name '{sensor_name}' not found in sensor_fields.")
 
@@ -35,22 +40,7 @@ class SensorThresholdBase(BaseModel):
         return value
 
 
-class SensorThresholdCreate(SensorThresholdBase):
-    sensor_name: Annotated[str, SensorType]
-    min_value: int
-    max_value: int
-    created_at: datetime = Field(default=datetime.utcnow())
-    last_updated: datetime = Field(default=datetime.utcnow())
-
-
-class SensorThresholdUpdate(BaseModel):
-    min_value: int
-    max_value: int
-    last_updated: datetime = Field(default=datetime.utcnow())
-
-
 class SensorThresholdDB(SensorThresholdBase):
-    id: int
     plant_id: int
 
     class Config:
