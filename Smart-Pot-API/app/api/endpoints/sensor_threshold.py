@@ -29,12 +29,13 @@ def get_current_user_thresholds(
 
 
 @router.get(
-    "/get-threshold/{threshold_id}",
+    "/get-threshold/{plant_id}/{threshold_id}",
     status_code=status.HTTP_200_OK,
     response_model=SensorThreshold,
 )
 def get_user_threshold_by_id(
-    threshold_id: int,
+    plant_id: int,
+    threshold_id: str,
     current_active_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db),
 ):
@@ -43,7 +44,7 @@ def get_user_threshold_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found or user is not active",
         )
-    sensor_threshold = get_sensor_threshold_by_id(db, threshold_id)
+    sensor_threshold = get_sensor_threshold_by_id(db, threshold_id, plant_id)
     if sensor_threshold is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Cannot find threshold"
