@@ -34,5 +34,7 @@ To get secret key, which you need to pass in `.env` file you need to type in ter
 `openssl rand -hex 32`
 
 ## Interactive API document
-![docs_api](https://github.com/Maksymilian-Plywaczyk/Smart-Pot/assets/65869609/c43d90d6-817c-4580-bf3d-3380c5fb7274)
+A list of all available endpoints in the API. This is the interactive documentation provided by Swagger.
+![docs-api](https://github.com/Maksymilian-Plywaczyk/Smart-Pot/assets/65869609/f7dbbfa2-01b8-41d2-a3ae-fe165be06827)
+
 
