@@ -1,3 +1,5 @@
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/pre-commit/pre-commit-hooks/main.svg)](https://results.pre-commit.ci/latest/github/pre-commit/pre-commit-hooks/main)
+
 # Smart-Pot
 A smart pot project carried out as part of a course at the Poznan University of Technology. The project will consist of four parts: ESP8266, API, Mobile App, Web Application and database. Docker will be used to containerise the whole application.
 
