@@ -1,4 +1,15 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: name-tests-test
+        args: [--pytest-test-first]
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: detect-private-key
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--enforce-all]
   - repo: https://github.com/asottile/seed-isort-config
     rev: v2.2.0
     hooks:
