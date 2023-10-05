@@ -1,4 +1,5 @@
 import pytest
+import sqlalchemy as sa
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
@@ -27,12 +28,22 @@ def override_get_db(db_engine):
     # connect to database
     connection = db_engine.connect()
     # begin a non-ORM transaction
-    transaction = connection.begin()
+    trans = connection.begin()
     # bind an individual Session to the connection
-    db = Session(bind=connection)
-    yield db
-    db.close()
-    transaction.rollback()
+    session = Session(bind=connection)
+
+    nested = connection.begin_nested()
+
+    @sa.event.listens_for(session, "after_transaction_end")
+    def end_savepoint(session, transaction):
+        nonlocal nested
+        if not nested.is_active:
+            nested = connection.begin_nested()
+
+    yield session
+    # Rollback the overall transaction, restoring the state before the test ran
+    session.close()
+    trans.rollback()
     connection.close()
 
 
