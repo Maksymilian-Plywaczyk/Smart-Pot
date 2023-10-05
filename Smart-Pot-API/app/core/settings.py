@@ -17,7 +17,7 @@ class Settings:
     POSTGRES_PORT: int = os.getenv('POSTGRES_PORT', 5432)  # default port 5432
     FRONTEND_URL: str = os.getenv('FRONTEND_URL')
     SECRET_KEY: str = os.getenv('SECRET_KEY')
-    DATABASE_URL: str = (
+    PRODUCTION_DATABASE_URL: str = (
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres/{POSTGRES_DB}"
     )
     EMAIL_TEMPLATE_DIR: str = "app/templates/"
