@@ -20,6 +20,10 @@ class Settings:
     PRODUCTION_DATABASE_URL: str = (
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@postgres/{POSTGRES_DB}"
     )
+    POSTGRES_TEST_USER: str = os.getenv('POSTGRES_TEST_USER')
+    POSTGRES_TEST_PASSWORD: str = os.getenv('POSTGRES_TEST_PASSWORD')
+    POSTGRES_TEST_DB: str = os.getenv('POSTGRES_TEST_DB')
+    TEST_DATABASE_URL: str = f"postgresql://{POSTGRES_TEST_USER}:{POSTGRES_TEST_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_TEST_DB}"
     EMAIL_TEMPLATE_DIR: str = "app/templates/"
     EMAIL_ADDRESS: str = os.getenv("EMAIL_ADDRESS")
     EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
