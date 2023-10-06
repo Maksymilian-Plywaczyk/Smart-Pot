@@ -22,6 +22,7 @@ from app.crud.crud_users import (
     create_new_user,
     get_current_user,
     get_user_by_email,
+    set_user_to_active,
     user_authentication,
 )
 from app.crud.email_connection import MailConnection
@@ -59,8 +60,7 @@ def login_access_token(
         subject=user.email, expires_delta=access_token_expires
     )
     refresh_token = create_refresh_token(subject=user.email)
-    user.is_active = True
-    db.commit()
+    set_user_to_active(db=db, user=user)
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
