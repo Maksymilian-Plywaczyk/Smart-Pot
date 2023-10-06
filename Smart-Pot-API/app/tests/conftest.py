@@ -49,8 +49,8 @@ def override_get_db(db_engine):
 
 
 @pytest.fixture(scope="function")
-def client(db):
-    app.dependency_overrides[get_db] = lambda: db
+def client(override_get_db):
+    app.dependency_overrides[get_db] = lambda: override_get_db
     with TestClient(app) as client:
         yield client
 
@@ -68,4 +68,21 @@ def client_without_authentication():
 
 @pytest.fixture(scope="function")
 def register_test_user(override_get_db):
-    pass
+    from app.crud.crud_users import create_new_user
+    from app.schemas.user import UserCreate
+
+    new_user = UserCreate(
+        full_name="Test User", email="test1@example.com", password="XS#1sdf111#!"
+    )
+    yield create_new_user(override_get_db, new_user)
+
+
+@pytest.fixture(scope="function")
+def retrieve_test_user_token(override_get_db, register_test_user):
+    from app.core.security import create_access_token
+    from app.crud.crud_users import set_user_to_active
+
+    register_test_user = set_user_to_active(override_get_db, register_test_user)
+    test_user_email = register_test_user.email
+    token = create_access_token(subject=test_user_email)
+    yield token
