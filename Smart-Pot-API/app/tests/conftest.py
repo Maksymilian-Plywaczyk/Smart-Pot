@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db
 from app.core.settings import settings
+from app.crud.crud_users import get_current_active_user, get_current_user
 from app.db.base import Base
 from app.main import app
 
@@ -50,5 +51,21 @@ def override_get_db(db_engine):
 @pytest.fixture(scope="function")
 def client(db):
     app.dependency_overrides[get_db] = lambda: db
-    with TestClient(app) as c:
-        yield c
+    with TestClient(app) as client:
+        yield client
+
+
+@pytest.fixture(scope="function")
+def client_without_authentication():
+    def skip_authentication():
+        return None
+
+    for dependency in [get_current_active_user, get_current_user]:
+        app.dependency_overrides[dependency] = skip_authentication
+    with TestClient(app) as client:
+        yield client
+
+
+@pytest.fixture(scope="function")
+def register_test_user(override_get_db):
+    pass
