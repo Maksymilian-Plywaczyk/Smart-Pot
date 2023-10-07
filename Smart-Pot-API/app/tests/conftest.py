@@ -78,11 +78,12 @@ def register_test_user(override_get_db):
 
 
 @pytest.fixture(scope="function")
-def retrieve_test_user_token(override_get_db, register_test_user):
+def retrieve_test_user_token_headers(override_get_db, register_test_user):
     from app.core.security import create_access_token
     from app.crud.crud_users import set_user_to_active
 
     register_test_user = set_user_to_active(override_get_db, register_test_user)
     test_user_email = register_test_user.email
     token = create_access_token(subject=test_user_email)
-    yield token
+    headers = {"Authorization": f"Bearer {token}"}
+    yield headers
