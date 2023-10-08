@@ -16,9 +16,14 @@ from app.crud.crud_token import get_token_by_token
 from app.models.user import User
 from app.schemas.token import TokenPayload
 from app.schemas.user import UserCreate
+from app.schemas.utils.languages import Languages
 
 
 def validate_user_timezone(timezone: str) -> bool:
+    if isinstance(timezone, str):
+        timezone = timezone.strip().replace(" ", "_")
+    else:
+        return False
     try:
         pytz.timezone(timezone)
         return True
@@ -27,8 +32,10 @@ def validate_user_timezone(timezone: str) -> bool:
 
 
 def get_user_by_email(db: Session, user_email: str):
-    user_by_email = db.query(User).filter(User.email == user_email).first()
-    return user_by_email
+    if isinstance(user_email, str):
+        user_by_email = db.query(User).filter(User.email == user_email).first()
+        return user_by_email
+    return None
 
 
 def user_authentication(db: Session, user_email: str, password: str) -> Optional[User]:
@@ -88,6 +95,9 @@ def update_user_timezone(db: Session, user: User, timezone: str) -> Any:
 
 
 def update_user_language(db: Session, user: User, language: str) -> Any:
+    language_options = [language.value for language in Languages]
+    if language not in language_options:
+        raise ValueError(f"Language {language} is not supported")
     user.language = language
     db.commit()
     db.refresh(user)

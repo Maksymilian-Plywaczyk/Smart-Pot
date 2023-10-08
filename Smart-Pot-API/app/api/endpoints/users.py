@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.endpoints.tags import Tag
@@ -16,6 +16,7 @@ from app.crud.crud_users import (
 )
 from app.schemas.message import Message
 from app.schemas.user import User, UserDelete, UserTimezoneSet
+from app.schemas.utils.languages import UpdateUserLanguage
 
 router = APIRouter(prefix="/api/v1/users", tags=[Tag.USERS])
 
@@ -28,14 +29,16 @@ def get_current_user(current_user: Annotated[User, Depends(get_current_active_us
 @router.patch("/update-language", response_model=Message, status_code=200)
 def update_active_user_language(
     current_active_user: Annotated[User, Depends(get_current_active_user)],
-    language: str = Body(..., embed=True),
+    language: UpdateUserLanguage,
     db: Session = Depends(get_db),
 ):
     if not current_active_user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active"
         )
-    user = update_user_language(db=db, user=current_active_user, language=language)
+    user = update_user_language(
+        db=db, user=current_active_user, language=language.language
+    )
     return {"message": f"User language has been updated to {user.language}"}
 
 
