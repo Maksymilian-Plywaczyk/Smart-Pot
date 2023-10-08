@@ -1,7 +1,8 @@
 from typing import Any
 
 from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import as_declarative
 
 
 @as_declarative(metadata=MetaData())  # class decorator for declarative_base()
