@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Optional
 
 import pytz
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
@@ -88,6 +88,12 @@ def is_active(user: User) -> bool:
 
 
 def update_user_timezone(db: Session, user: User, timezone: str) -> Any:
+    if isinstance(user, User) is False:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not correctly provided")
+    if not validate_user_timezone(timezone):
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, "User provide invalid timezone"
+        )
     user.timezone = timezone
     db.commit()
     db.refresh(user)
@@ -105,6 +111,8 @@ def update_user_language(db: Session, user: User, language: str) -> Any:
 
 
 def set_user_to_active(db: Session, user: User) -> Any:
+    if isinstance(user, User) is False:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not correctly provided")
     user.is_active = True
     db.commit()
     db.refresh(user)
@@ -118,6 +126,10 @@ def get_current_active_user(current_user: Annotated[User, Depends(get_current_us
 
 
 def create_new_user(db: Session, user: UserCreate):
+    if not user:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, "User need to provide necessary data"
+        )
     hashed_password = get_hashed_password(plain_password=user.password)
     database_user = User(
         full_name=user.full_name, email=user.email, hashed_password=hashed_password
@@ -129,6 +141,11 @@ def create_new_user(db: Session, user: UserCreate):
 
 
 def delete_user(db: Session, user: User) -> Any:
+    if isinstance(user, User) is False:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            "Cannot delete user, which is not correctly provided",
+        )
     db.delete(user)
     db.commit()
-    return {"message": "User deleted succesfully"}
+    return {"message": "User deleted successfully"}

@@ -12,7 +12,6 @@ from app.crud.crud_users import (
     update_user_language,
     update_user_timezone,
     user_authentication,
-    validate_user_timezone,
 )
 from app.schemas.message import Message
 from app.schemas.user import User, UserDelete, UserTimezoneSet
@@ -48,11 +47,6 @@ def update_active_user_timezone(
     timezone: UserTimezoneSet,
     db: Session = Depends(get_db),
 ):
-    if not validate_user_timezone(timezone.timezone):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User provide wrong timezone",
-        )
     if not current_active_user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active"
