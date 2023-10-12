@@ -78,12 +78,34 @@ def register_test_user(override_get_db):
 
 
 @pytest.fixture(scope="function")
+def register_test_user_with_timezone(override_get_db, register_test_user):
+    from app.crud.crud_users import update_user_timezone
+    from app.schemas.user import UserTimezoneSet
+
+    timezone = UserTimezoneSet(timezone="Europe/Warsaw")
+    yield update_user_timezone(override_get_db, register_test_user, timezone.timezone)
+
+
+@pytest.fixture(scope="function")
 def retrieve_test_user_token_headers(override_get_db, register_test_user):
     from app.core.security import create_access_token
-    from app.crud.crud_users import set_user_to_active
+    from app.crud.crud_users import control_user_activity
 
-    register_test_user = set_user_to_active(override_get_db, register_test_user)
+    register_test_user = control_user_activity(
+        override_get_db, register_test_user, state=True
+    )
     test_user_email = register_test_user.email
     token = create_access_token(subject=test_user_email)
     headers = {"Authorization": f"Bearer {token}"}
-    yield headers
+    yield headers, token
+
+
+@pytest.fixture(scope="function")
+def destroy_test_user_token(
+    override_get_db, retrieve_test_user_token_headers, register_test_user
+):
+    from app.core.security import destroy_access_token
+
+    yield destroy_access_token(
+        override_get_db, retrieve_test_user_token_headers[1], register_test_user
+    )
