@@ -19,10 +19,10 @@ from app.core.security import (
 )
 from app.core.settings import settings
 from app.crud.crud_users import (
+    control_user_activity,
     create_new_user,
     get_current_user,
     get_user_by_email,
-    set_user_to_active,
     user_authentication,
 )
 from app.crud.email_connection import MailConnection
@@ -60,7 +60,7 @@ def login_access_token(
         subject=user.email, expires_delta=access_token_expires
     )
     refresh_token = create_refresh_token(subject=user.email)
-    set_user_to_active(db=db, user=user)
+    control_user_activity(db=db, user=user, state=True)
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,

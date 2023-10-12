@@ -110,10 +110,10 @@ def update_user_language(db: Session, user: User, language: str) -> Any:
     return user
 
 
-def set_user_to_active(db: Session, user: User) -> Any:
+def control_user_activity(db: Session, user: User, state: bool) -> Any:
     if isinstance(user, User) is False:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not correctly provided")
-    user.is_active = True
+    user.is_active = state
     db.commit()
     db.refresh(user)
     return user
