@@ -113,5 +113,7 @@ def verify_access_token(token: str) -> Optional[str]:
     try:
         decoded_token = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
         return decoded_token["subject"]
+    except jwt.ExpiredSignatureError:
+        raise jwt.ExpiredSignatureError
     except jwt.JWTError:
-        return None
+        raise jwt.JWTError

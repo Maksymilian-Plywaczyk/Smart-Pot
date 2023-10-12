@@ -67,8 +67,6 @@ def get_current_user(
                 status_code=401,
                 detail="Token is invalid or has been invalidated (logged out).",
             )
-        if email is None:
-            raise credentials_exception
         token_data = TokenPayload(email=email)
     except jwt.ExpiredSignatureError:
         raise token_expire_exception
