@@ -24,6 +24,6 @@ jobs:
         EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
         EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
         EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-      run: docker-compose -f "test.docker-compose.yaml" build
+      run: docker-compose -f "test-docker-compose.yaml" build
     - name: Run the tests
-      run: docker-compose -f "test.docker-compose.yaml" run api pytest tests/
+      run: docker-compose -f "test-docker-compose.yaml" run api pytest tests/
