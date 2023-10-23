@@ -8,22 +8,22 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_TEST_DB: ${{ secrets.POSTGRES_DB }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+      EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+      EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Build the Docker containers
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        POSTGRES_SERVER: postgres
-        POSTGRES_PORT: 5432
-        POSTGRES_TEST_DB: ${{ secrets.POSTGRES_DB }}
-        FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
-        EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
-        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
       run: docker-compose -f "test-docker-compose.yaml" build
     - name: Run Application with Docker Compose
       run: docker-compose -f "test-docker-compose.yaml" up
