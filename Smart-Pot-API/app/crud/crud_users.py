@@ -5,18 +5,18 @@ from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_db
-from app.core.security import (
+from ..core.dependencies import get_db
+from ..core.security import (
     get_hashed_password,
     oauth2_scheme,
     verify_access_token,
     verify_password,
 )
-from app.crud.crud_token import get_token_by_token
-from app.models.user import User
-from app.schemas.token import TokenPayload
-from app.schemas.user import UserCreate
-from app.schemas.utils.languages import Languages
+from ..crud.crud_token import get_token_by_token
+from ..models.user import User
+from ..schemas.token import TokenPayload
+from ..schemas.user import UserCreate
+from ..schemas.utils.languages import Languages
 
 
 def validate_user_timezone(timezone: str) -> bool:

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.schemas.mail import EmailResponse
+from ..schemas.mail import EmailResponse
 
 
 class Message(BaseModel):

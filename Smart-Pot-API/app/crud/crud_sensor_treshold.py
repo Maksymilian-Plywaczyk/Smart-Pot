@@ -3,11 +3,11 @@ from typing import Annotated, Any
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.crud.crud_plants import get_user_plant_by_id
-from app.crud.crud_users import get_current_active_user
-from app.models.sensor_threshold import SensorThreshold as SensorThresholdModel
-from app.models.user import User
-from app.schemas.sensor_threshold import SensorThresholdUpdate
+from ..crud.crud_plants import get_user_plant_by_id
+from ..crud.crud_users import get_current_active_user
+from ..models.sensor_threshold import SensorThreshold as SensorThresholdModel
+from ..models.user import User
+from ..schemas.sensor_threshold import SensorThresholdUpdate
 
 
 def get_sensor_threshold_by_id(

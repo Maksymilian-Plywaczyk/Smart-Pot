@@ -3,16 +3,16 @@ from typing import Annotated, List, Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.endpoints.tags import Tag
-from app.core.dependencies import get_db
-from app.crud.crud_sensor_treshold import (
+from ...api.endpoints.tags import Tag
+from ...core.dependencies import get_db
+from ...crud.crud_sensor_treshold import (
     get_current_user_sensor_thresholds,
     get_sensor_threshold_by_id,
     update_user_sensor_threshold,
 )
-from app.crud.crud_users import get_current_active_user
-from app.models.user import User
-from app.schemas.sensor_threshold import SensorThreshold, SensorThresholdUpdate
+from ...crud.crud_users import get_current_active_user
+from ...models.user import User
+from ...schemas.sensor_threshold import SensorThreshold, SensorThresholdUpdate
 
 router = APIRouter(prefix="/api/v1/sensor-threshold", tags=[Tag.THRESHOLDS])
 

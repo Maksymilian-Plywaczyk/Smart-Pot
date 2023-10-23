@@ -4,21 +4,21 @@ from typing import Annotated, Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import EmailStr, parse_obj_as
 
-from app.api.endpoints.tags import Tag
-from app.core.dependencies import get_db
-from app.core.security import create_device_token
-from app.crud.crud_devices import (
+from ...api.endpoints.tags import Tag
+from ...core.dependencies import get_db
+from ...core.security import create_device_token
+from ...crud.crud_devices import (
     create_new_device,
     delete_user_device,
     get_current_user_devices,
     get_device_by_id,
 )
-from app.crud.crud_users import get_current_active_user
-from app.crud.email_connection import MailConnection
-from app.models.user import User
-from app.schemas.device import Device, DeviceCreate, DeviceResponse
-from app.schemas.mail import Email, EmailResponse
-from app.schemas.message import Message
+from ...crud.crud_users import get_current_active_user
+from ...crud.email_connection import MailConnection
+from ...models.user import User
+from ...schemas.device import Device, DeviceCreate, DeviceResponse
+from ...schemas.mail import Email, EmailResponse
+from ...schemas.message import Message
 
 router = APIRouter(prefix="/api/v1/devices", tags=[Tag.DEVICES])
 

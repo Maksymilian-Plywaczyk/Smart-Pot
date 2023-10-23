@@ -3,9 +3,9 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from app.schemas.device import Device
-from app.schemas.sensor_threshold import SensorThreshold
-from app.schemas.sensors import Sensor
+from ..schemas.device import Device
+from ..schemas.sensor_threshold import SensorThreshold
+from ..schemas.sensors import Sensor
 
 
 class PlantBase(BaseModel):

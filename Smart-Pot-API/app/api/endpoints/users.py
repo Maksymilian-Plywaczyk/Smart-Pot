@@ -3,19 +3,19 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.endpoints.tags import Tag
-from app.core.dependencies import get_db
-from app.core.security import verify_access_token
-from app.crud.crud_users import (
+from ...api.endpoints.tags import Tag
+from ...core.dependencies import get_db
+from ...core.security import verify_access_token
+from ...crud.crud_users import (
     delete_user,
     get_current_active_user,
     update_user_language,
     update_user_timezone,
     user_authentication,
 )
-from app.schemas.message import Message
-from app.schemas.user import User, UserDelete, UserTimezoneSet
-from app.schemas.utils.languages import UpdateUserLanguage
+from ...schemas.message import Message
+from ...schemas.user import User, UserDelete, UserTimezoneSet
+from ...schemas.utils.languages import UpdateUserLanguage
 
 router = APIRouter(prefix="/api/v1/users", tags=[Tag.USERS])
 

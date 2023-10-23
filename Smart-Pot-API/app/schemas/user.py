@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
-from app.schemas.plant import Plant
-from app.schemas.utils.languages import Languages
+from ..schemas.plant import Plant
+from ..schemas.utils.languages import Languages
 
 """ Pydantic models to validate data about Users"""
 

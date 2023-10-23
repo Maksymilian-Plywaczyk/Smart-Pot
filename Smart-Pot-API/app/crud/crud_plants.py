@@ -4,14 +4,13 @@ from typing import Annotated, Any, List, Optional
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.security import verify_device_token
-from app.crud.crud_devices import get_device_by_id, get_device_by_token
-from app.crud.crud_users import get_current_active_user, get_user_by_email
-from app.models.device import Device
-from app.models.plant import Plant as PlantDB
-from app.models.plant import Plant_Hist
-from app.models.user import User
-
+from ..core.security import verify_device_token
+from ..crud.crud_devices import get_device_by_id, get_device_by_token
+from ..crud.crud_users import get_current_active_user, get_user_by_email
+from ..models.device import Device
+from ..models.plant import Plant as PlantDB
+from ..models.plant import Plant_Hist
+from ..models.user import User
 from ..schemas.plant import ChangePlantName, Plant, PlantCreate, PlantUpdate
 
 

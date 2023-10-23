@@ -3,8 +3,8 @@ from pathlib import Path
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from starlette.responses import JSONResponse
 
-from app.core.settings import settings
-from app.schemas.mail import Email
+from ..core.settings import settings
+from ..schemas.mail import Email
 
 
 class MailConnection:

@@ -2,7 +2,7 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, validator
 
-from app.schemas.utils.sensors_type import SensorType
+from ..schemas.utils.sensors_type import SensorType
 
 sensor_fields = {
     "hum": {"min_val": 0, "max_val": 100},

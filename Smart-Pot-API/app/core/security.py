@@ -9,11 +9,11 @@ from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.core.settings import settings
-from app.crud.crud_token import get_token_by_token
-from app.models.blacklist_token import BlackListToken
-from app.models.user import User
-from app.schemas.message import Message
+from ..core.settings import settings
+from ..crud.crud_token import get_token_by_token
+from ..models.blacklist_token import BlackListToken
+from ..models.user import User
+from ..schemas.message import Message
 
 SECRET_KEY = settings.SECRET_KEY  # secret key for JWT
 ALGORITHM = "HS256"  # type of algorithm

@@ -5,10 +5,10 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy import String, cast
 from sqlalchemy.orm import Session
 
-from app.crud.crud_users import get_current_active_user, get_user_by_email
-from app.models.device import Device
-from app.models.user import User
-from app.schemas.device import DeviceCreate
+from ..crud.crud_users import get_current_active_user, get_user_by_email
+from ..models.device import Device
+from ..models.user import User
+from ..schemas.device import DeviceCreate
 
 
 def create_id_for_device(device_type: str):

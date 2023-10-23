@@ -6,9 +6,9 @@ from jose import jwt
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-from app.api.endpoints.tags import Tag
-from app.core.dependencies import get_db
-from app.core.security import (
+from ...api.endpoints.tags import Tag
+from ...core.dependencies import get_db
+from ...core.security import (
     create_access_token,
     create_refresh_token,
     create_reset_password_token,
@@ -17,20 +17,20 @@ from app.core.security import (
     oauth2_scheme,
     verify_access_token,
 )
-from app.core.settings import settings
-from app.crud.crud_users import (
+from ...core.settings import settings
+from ...crud.crud_users import (
     control_user_activity,
     create_new_user,
     get_current_user,
     get_user_by_email,
     user_authentication,
 )
-from app.crud.email_connection import MailConnection
-from app.models.user import User
-from app.schemas.mail import Email
-from app.schemas.message import Message
-from app.schemas.token import RefreshToken, ResetToken, Token
-from app.schemas.user import UserChangePassword, UserCreate
+from ...crud.email_connection import MailConnection
+from ...models.user import User
+from ...schemas.mail import Email
+from ...schemas.message import Message
+from ...schemas.token import RefreshToken, ResetToken, Token
+from ...schemas.user import UserChangePassword, UserCreate
 
 router = APIRouter(prefix="/api/v1", tags=[Tag.LOGIN])
 

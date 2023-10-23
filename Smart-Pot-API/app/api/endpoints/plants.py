@@ -3,9 +3,9 @@ from typing import Annotated, Any, List, Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.endpoints.tags import Tag
-from app.core.dependencies import get_db
-from app.crud.crud_plants import (
+from ...api.endpoints.tags import Tag
+from ...core.dependencies import get_db
+from ...crud.crud_plants import (
     create_new_plant,
     delete_user_plant,
     get_current_user_plants,
@@ -16,16 +16,10 @@ from app.crud.crud_plants import (
     update_plant,
     update_plant_name,
 )
-from app.crud.crud_users import get_current_active_user
-from app.models.user import User
-from app.schemas.message import Message
-from app.schemas.plant import (
-    ChangePlantName,
-    Plant,
-    PlantCreate,
-    PlantHist,
-    PlantUpdate,
-)
+from ...crud.crud_users import get_current_active_user
+from ...models.user import User
+from ...schemas.message import Message
+from ...schemas.plant import ChangePlantName, Plant, PlantCreate, PlantHist, PlantUpdate
 
 router = APIRouter(prefix="/api/v1/plants", tags=[Tag.PLANTS])
 router_historical = APIRouter(prefix="/api/v1/hist-plants", tags=[Tag.PLANTS])

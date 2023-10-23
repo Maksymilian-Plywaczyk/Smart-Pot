@@ -6,7 +6,7 @@ from faker import Faker
 from fastapi import HTTPException
 from pydantic.error_wrappers import ValidationError
 
-from app.crud.crud_users import (
+from ...crud.crud_users import (
     control_user_activity,
     create_new_user,
     delete_user,
@@ -19,8 +19,8 @@ from app.crud.crud_users import (
     user_authentication,
     validate_user_timezone,
 )
-from app.models.user import User as UserModel
-from app.schemas.user import UserCreate
+from ...models.user import User as UserModel
+from ...schemas.user import UserCreate
 
 
 class TestCrudUser:
@@ -217,8 +217,8 @@ class TestCrudUser:
 
     @pytest.mark.integration
     def test_get_current_user_token_expired(self, monkeypatch):
-        from app.core.security import create_access_token
-        from app.core.settings import settings
+        from ...core.security import create_access_token
+        from ...core.settings import settings
 
         monkeypatch.setattr(settings, "ACCESS_TOKEN_EXPIRE_MINUTES", 1)
         token = create_access_token(
@@ -232,7 +232,7 @@ class TestCrudUser:
 
     @pytest.mark.integration
     def test_get_current_user_invalid_user(self):
-        from app.core.security import create_access_token
+        from ...core.security import create_access_token
 
         token = create_access_token(subject=self.random_email)
         with pytest.raises(HTTPException) as exception_info:

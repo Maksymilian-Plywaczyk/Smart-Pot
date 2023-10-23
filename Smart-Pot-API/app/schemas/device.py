@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
-from app.schemas.mail import EmailResponse
-from app.schemas.utils.device_enums import DeviceNames
+from ..schemas.mail import EmailResponse
+from ..schemas.utils.device_enums import DeviceNames
 
 
 class DeviceBase(BaseModel):
