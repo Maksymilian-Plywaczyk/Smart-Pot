@@ -10,6 +10,7 @@ services:
       PGDATA: /data/
     volumes:
       - ./Smart-Pot-API/database:/data
+      - ./Smart-Pot-API/data/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test:
         [
@@ -27,6 +28,10 @@ services:
     restart: always
     env_file:
       - Smart-Pot-API/.env
+    environment:
+      POSTGRES_SERVER: postgres
+      POSTGRES_TEST_USER: ${POSTGRES_USER}
+      POSTGRES_TEST_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "8000:8000"
     depends_on:
@@ -36,3 +41,4 @@ services:
       - ./Smart-Pot-API/app:/smart_pot_api/app
       - ./Smart-Pot-API/alembic.ini:/smart_pot_api/alembic.ini
       - ./Smart-Pot-API/alembic:/smart_pot_api/alembic
+      - ./Smart-Pot-API/pytest.ini:/smart_pot_api/pytest.ini
