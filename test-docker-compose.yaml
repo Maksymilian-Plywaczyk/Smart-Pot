@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15.1-alpine3.17
+    container_name: postgres
+    restart: always
+    environment:
+      PGDATA: /data/
+    volumes:
+      - ./Smart-Pot-API/database:/data
+      - ./Smart-Pot-API/data/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build:
+      context: ./Smart-Pot-API
+      dockerfile: Dockerfile
+    container_name: api
+    restart: always
+    environment:
+      POSTGRES_SERVER: postgres
+      POSTGRES_TEST_USER: ${POSTGRES_USER}
+      POSTGRES_TEST_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./Smart-Pot-API/app:/smart_pot_api/app
+      - ./Smart-Pot-API/alembic.ini:/smart_pot_api/alembic.ini
+      - ./Smart-Pot-API/alembic:/smart_pot_api/alembic
+      - ./Smart-Pot-API/pytest.ini:/smart_pot_api/pytest.ini
