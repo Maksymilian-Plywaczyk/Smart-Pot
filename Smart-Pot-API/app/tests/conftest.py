@@ -13,7 +13,6 @@ from ..main import app
 
 
 def get_engine() -> Engine:
-    print("TEST:", settings.TEST_DATABASE_URL)
     return create_engine(settings.TEST_DATABASE_URL)
 
 

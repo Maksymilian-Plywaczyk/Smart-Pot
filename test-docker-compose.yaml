@@ -21,6 +21,7 @@ services:
     container_name: api
     restart: always
     environment:
+      SECRET_KEY: ${SECRET_KEY}
       POSTGRES_SERVER: postgres
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
