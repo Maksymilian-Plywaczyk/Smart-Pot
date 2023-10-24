@@ -20,6 +20,7 @@ jobs:
       EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
       EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
       EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      TEST_DATABASE_URL: "postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}"
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
