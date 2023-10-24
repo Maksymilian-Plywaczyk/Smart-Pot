@@ -15,7 +15,7 @@ jobs:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       POSTGRES_SERVER: postgres
       POSTGRES_PORT: 5432
-      POSTGRES_TEST_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
       FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
       EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
       EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
