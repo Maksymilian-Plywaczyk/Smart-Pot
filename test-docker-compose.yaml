@@ -6,9 +6,7 @@ services:
     restart: always
     environment:
       PGDATA: /data/
-      POSTGRES_SERVER: postgres
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      LANG: en_US.utf8  # Set the desired locale
     volumes:
       - ./Smart-Pot-API/database:/data
       - ./Smart-Pot-API/data/init.sql:/docker-entrypoint-initdb.d/init.sql
