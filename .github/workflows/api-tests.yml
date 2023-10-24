@@ -26,6 +26,6 @@ jobs:
     - name: Build the Docker containers
       run: docker-compose -f "test-docker-compose.yaml" build
     - name: Run Application with Docker Compose
-      run: docker-compose -f "test-docker-compose.yaml" up
+      run: docker-compose -f "test-docker-compose.yaml" up -d
     - name: Run the tests
       run: docker-compose -f "test-docker-compose.yaml" run api pytest tests/
