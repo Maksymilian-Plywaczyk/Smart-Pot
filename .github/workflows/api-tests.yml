@@ -27,5 +27,12 @@ jobs:
       run: docker-compose -f "test-docker-compose.yaml" build
     - name: Run Application with Docker Compose
       run: docker-compose -f "test-docker-compose.yaml" up -d
+    - name: Wait for PostgreSQL to start
+      run: |
+        # Wait for the PostgreSQL container to be ready
+        while ! docker-compose -f "test-docker-compose.yaml" exec postgres pg_isready -U $POSTGRES_USER -d $POSTGRES_DB -h postgres -p $POSTGRES_PORT -t 1; do
+          echo "Waiting for PostgreSQL to start..."
+          sleep 5
+        done
     - name: Run the tests
       run: docker-compose -f "test-docker-compose.yaml" run api pytest tests/
