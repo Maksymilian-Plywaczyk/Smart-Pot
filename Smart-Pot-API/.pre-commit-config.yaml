@@ -4,17 +4,17 @@ repos:
 
     hooks:
       - id: name-tests-test
-        args: [--pytest-test-first]
+        args: [ --pytest-test-first ]
       - id: trailing-whitespace
       - id: end-of-file-fixer
         exclude: requirements.txt
       - id: detect-private-key
       - id: check-merge-conflict
       - id: check-added-large-files
-        args: [--enforce-all]
+        args: [ --enforce-all ]
   - repo:
       https://github.com/charliermarsh/ruff-pre-commit
-      # Ruff version.
+    # Ruff version.
     rev: v0.1.2
     hooks:
       - id: ruff-format
