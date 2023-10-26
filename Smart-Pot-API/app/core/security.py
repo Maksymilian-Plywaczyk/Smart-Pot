@@ -1,7 +1,7 @@
 import secrets
 import string
 from datetime import datetime, timedelta
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -46,36 +46,52 @@ def verify_device_name_with_updated_name(device_in: str, device_updated) -> bool
 
 
 def create_access_token(
-    subject: Union[str, any], expires_delta: Optional[timedelta] = None
+    subject: Union[str, Any], expires_delta: Optional[timedelta] = None
 ) -> str:
+    expires_delta_time: datetime
     if expires_delta is not None:
-        expires_delta = datetime.utcnow() + expires_delta
+        expires_delta_time = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(
+        expires_delta_time = datetime.utcnow() + timedelta(
             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
         )
 
-    to_encode = {"exp": expires_delta, "subject": str(subject)}
-    encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    to_encode = {"exp": expires_delta_time, "subject": str(subject)}
+    if SECRET_KEY is not None:
+        encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
+        return encoded_jwt
+    else:
+        raise ValueError("SECRET_KEY must be set")
 
 
-def create_reset_password_token(subject: Union[str, any]) -> str:
-    expires_delta = datetime.utcnow() + timedelta(
-        minutes=settings.RESET_PASSWORD_TOKEN_EXPIRE_TIME
-    )
-    to_encode = {"exp": expires_delta, "subject": str(subject)}
-    encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+def create_reset_password_token(
+    subject: Union[str, Any], expires_delta: Optional[timedelta] = None
+) -> str:
+    expires_delta_time: datetime
+    if expires_delta is not None:
+        expires_delta_time = datetime.utcnow() + expires_delta
+    else:
+        expires_delta_time = datetime.utcnow() + timedelta(
+            minutes=settings.RESET_PASSWORD_TOKEN_EXPIRE_TIME
+        )
+    to_encode = {"exp": expires_delta_time, "subject": str(subject)}
+    if SECRET_KEY is not None:
+        encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
+        return encoded_jwt
+    else:
+        raise ValueError("SECRET_KEY must be set")
 
 
-def create_refresh_token(subject: Union[str, any]) -> str:
+def create_refresh_token(subject: Union[str, Any]) -> str:
     expires_delta = datetime.utcnow() + timedelta(
         minutes=settings.REFRESH_TOKEN_EXPIRE_TIME
     )
     to_encode = {"exp": expires_delta, "subject": str(subject)}
-    encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    if SECRET_KEY is not None:
+        encoded_jwt = jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
+        return encoded_jwt
+    else:
+        raise ValueError("SECRET_KEY must be set")
 
 
 def destroy_access_token(db: Session, token: str, current_user: User) -> Message:
@@ -106,7 +122,7 @@ def destroy_access_token(db: Session, token: str, current_user: User) -> Message
 
 def create_device_token(length_token: int) -> str:
     characters = string.ascii_letters + string.digits
-    return ''.join(secrets.choice(characters) for _ in range(length_token))
+    return "".join(secrets.choice(characters) for _ in range(length_token))
 
 
 def verify_access_token(token: str) -> Optional[str]:

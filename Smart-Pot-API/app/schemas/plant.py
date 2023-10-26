@@ -12,7 +12,7 @@ class PlantBase(BaseModel):
     """Base class for Plant Pydantic model"""
 
     name: Optional[str] = None
-    device_id: str
+    device_id: Optional[str] = None
     last_updated: Optional[datetime] = datetime.now()
 
 
@@ -21,6 +21,7 @@ class PlantCreate(PlantBase):
 
     name: str
     imgsrc: Optional[str] = None
+    device_id: str
     sensors: Optional[Sensor] = Field(
         default=Sensor(humidity=0.0, lux=0.0, temperature=0.0),
         description="Plant's sensors",
@@ -31,7 +32,6 @@ class PlantUpdate(PlantBase):
     """Plant class for receive on plant update"""
 
     sensors: Sensor
-    device_id: Optional[str] = None
     device_token: str
 
 

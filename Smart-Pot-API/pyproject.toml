@@ -71,3 +71,11 @@ select = [
   # isort
   "I",
 ]
+[tool.mypy]
+exclude = [
+    'venv/',
+    'alembic/'
+]
+[[tool.mypy.overrides]]
+module = "fastapi_mail"
+ignore_missing_imports = true

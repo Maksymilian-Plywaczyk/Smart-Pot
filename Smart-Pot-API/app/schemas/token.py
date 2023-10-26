@@ -1,3 +1,5 @@
+from typing import Union
+
 from pydantic import BaseModel, Field
 
 
@@ -17,4 +19,4 @@ class ResetToken(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    email: str = None
+    email: Union[str, None] = None

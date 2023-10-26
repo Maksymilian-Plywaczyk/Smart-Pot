@@ -11,7 +11,7 @@ class User(Base):
     full_name = Column(String, index=True, nullable=False)
     email = Column(String, index=True, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean(), default=False)
+    is_active = Column(Boolean, default=False)
     language = Column(String, nullable=True)
     timezone = Column(String, nullable=True)
     plants = relationship("Plant", back_populates="owner_id")
